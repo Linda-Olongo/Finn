@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="news-container">
+    <!-- En-tête centré -->
+    <div class="header-center">
+        <h1>Global & Business News</h1>
+        <p class="subtitle">Dive into the heart of economic and business news, and master global market trends with sharp and instant analysis.</p>
+    </div>
+
+    <!-- Barre de recherche centrée avec loupe -->
+    <div class="search-wrapper">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <form action="{{ url_for('main.news') }}" method="get">
+                <input type="text" id="company-search" name="company" placeholder="Consult a company">
+                <button type="submit" style="display: none;">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {% if view_type == 'company' %}
+        <!-- Section entreprise -->
+        <div class="category-content">
+            <h2 class="category-title">{{ company_name }}</h2>
+            <p class="category-description">Latest news and analysis for {{ company_name }}</p>
+        </div>
+    {% else %}
+        <!-- Section catégorie -->
+        <div class="category-content">
+            <h2 class="category-title">{{ current_category }}</h2>
+            <p class="category-description">
+                {% if current_category == 'Stock Markets' %}
+                    Real-time insights into global stock markets and investment trends
+                {% elif current_category == 'Cryptocurrencies' %}
+                    Latest updates and analysis of digital currencies and blockchain technology
+                {% elif current_category == 'Macroeconomics' %}
+                    Global economic trends, GDP, inflation, and policy impacts analysis
+                {% elif current_category == 'Commodities' %}
+                    Updates on gold, oil, gas, and other commodity markets
+                {% elif current_category == 'Financial Tech' %}
+                    Innovations in fintech, digital payments, and financial AI
+                {% elif current_category == 'Financial Regulation' %}
+                    Latest regulatory changes and compliance requirements in finance
+                {% elif current_category == 'Forex & Currencies' %}
+                    Currency exchange market trends and digital currency developments
+                {% elif current_category == 'Technical Analysis' %}
+                    Market charts, trading indicators, and technical trading strategies
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Navigation des catégories -->
+        <div class="category-tabs">
+            {% for category in categories %}
+                <a href="{{ url_for('main.news', category=category) }}"
+                   class="tab {% if category == current_category %}active{% endif %}">
+                    {{ category }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Articles -->
+    <div class="news-list">
+        {% if error_message %}
+            <!-- Afficher un message d'erreur si présent -->
+            <div class="news-message">{{ error_message }}</div>
+        {% elif news_data|length == 0 %}
+            <!-- Aucun article trouvé -->
+            <div class="news-message">No articles found. Try searching for something else.</div>
+        {% else %}
+            {% for article in news_data %}
+                <article class="news-item">
+                    <!-- Titre -->
+                    <h3 class="news-title">{{ article.titre }}</h3>
+                    
+                    <!-- Métadonnées (source et date) -->
+                    <div class="news-meta">
+                        <span class="source">{{ article.source }}</span>
+                        <span class="date">{{ article.date }}</span>
+                    </div>
+                    
+                    <!-- Résumé si disponible -->
+                    {% if article.resume and article.resume != "" %}
+                    <div class="news-content">
+                        <p class="news-summary">{{ article.resume }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Lien vers l'article -->
+                    <div class="news-footer">
+                        <a href="{{ article.url }}" target="_blank" class="read-more">Read full article</a>
+                    </div>
+                </article>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

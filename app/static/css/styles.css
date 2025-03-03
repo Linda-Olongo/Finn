@@ -1,0 +1,718 @@
+/* STYLE DU FICHIER BASE*/
+:root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --nav-bg: rgba(32, 32, 32, 0.8);
+    --text-muted: #666;
+    --nav-height: 42px;
+    --sidebar-width: 260px;
+    --shortcut-bg: #2a2a2a;
+    --collapsed-width: 200px;
+    /* Nouvelles variables pour le contenu blanc */
+    --content-bg: #ffffff;
+    --content-text: #000000;
+    --border-radius: 12px;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    padding: 16px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease;
+}
+
+/* État de la sidebar en mode collapsed */
+.sidebar.collapsed {
+    width: var(--collapsed-width);
+}
+
+/* Logo section */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0 8px;
+}
+
+.sidebar.collapsed .logo-container {
+    justify-content: space-between; 
+    padding: 0 4px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.logo span {
+    font-size: 20px;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .logo span {
+    opacity: 1;
+    font-size: 18px;
+}
+
+.logo span.version {
+    font-size: 14px;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+.sidebar.collapsed .logo span.version {
+    opacity: 0;
+    width: 0;
+    display: none;
+}
+
+#sidebarToggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+}
+
+/* Navigation */
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar.collapsed .navigation {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.nav-item {
+    width: 100%;
+}
+
+/* Navigation Links commun style */
+.nav-link {
+    width: 100%;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: var(--nav-bg);
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* New Chat specific */
+.new-chat {
+    background-color: var(--nav-bg);
+    cursor: pointer;
+}
+
+.new-chat .icon {
+    font-size: 18px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shortcuts {
+    display: flex;
+    gap: 4px;
+}
+
+.shortcuts span {
+    background-color: var(--shortcut-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Navigation icon */
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Recent Section */
+.recent {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: 24px;
+    padding: 0 12px;
+}
+
+/* Main Content - Modifié */
+.main-content {
+    margin-left: var(--sidebar-width);
+    margin-right: var(--sidebar-width);
+    padding: 20px;
+    flex: 1;
+    background-color: var(--bg-color);
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: var(--collapsed-width);
+}
+
+/* Nouveau conteneur blanc */
+.content-wrapper {
+    background-color: var(--content-bg);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    height: calc(100vh - 40px);
+    color: var(--content-text);
+    box-shadow: var(--card-shadow);
+    position: fixed;
+    top: 20px;
+    left: calc(var(--sidebar-width) + 20px);
+    right: calc(var(--sidebar-width) + 20px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+    /* Cacher complètement la barre de défilement par défaut */
+    -ms-overflow-style: none;  /* IE et Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+
+/* Cacher la barre de défilement pour Chrome, Safari et Opera */
+.content-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Style pour quand la barre est active */
+.content-wrapper.show-scrollbar::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+}
+
+.content-wrapper.show-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-wrapper.show-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+}
+
+/* Ajuster en mode sidebar collapsed */
+.main-content.expanded .content-wrapper {
+    left: calc(var(--collapsed-width) + 20px);
+}
+
+
+/* Nouvelle sidebar droite */
+.sidebar-right {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--bg-color);
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 16px;
+    color: var(--text-color);
+    overflow-y: auto;
+}
+
+/* Style des cartes métriques */
+.metrics-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.metric-card {
+    background-color: var(--nav-bg);
+    border-radius: var(--border-radius);
+    padding: 16px;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.metric-title {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.metric-value {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.metric-chart {
+    height: 60px;
+    width: 100%;
+    background-color: var(--shortcut-bg);
+    border-radius: 8px;
+}
+
+
+/* STYLE DU FICHIER NEWS */
+.news-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header centré */
+.header-center {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header-center h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.header-center .subtitle {
+    font-size: 16px;
+    color: #6B6B6B;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Barre de recherche */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6B6B6B;
+}
+
+#company-search {
+    width: 100%;
+    padding: 14px 44px;
+    font-size: 16px;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#company-search:focus {
+    outline: none;
+    border-color: #2D2D2D;
+}
+
+/* Catégorie */
+.category-content {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.category-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.category-description {
+    color: #6B6B6B;
+    font-size: 15px;
+}
+
+/* Tabs - Version plus compacte pour éviter le débordement */
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #E5E5E5;
+    padding-bottom: 1px;
+}
+
+.tab {
+    color: #6B6B6B;
+    text-decoration: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
+    margin: 0 4px;
+}
+
+.tab:hover {
+    background-color: #F7F7F8;
+}
+
+.tab.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+    font-weight: 500;
+}
+
+/* Articles - Style inspiré du formatage avec icônes */
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background-color: transparent;
+}
+
+.news-item {
+    padding: 20px;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    background: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 16px;
+}
+
+.news-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.news-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #6B6B6B;
+}
+
+.news-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.news-summary {
+    color: #404040;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 2px solid #E5E5E5;
+}
+
+.read-more {
+    display: inline-block;
+    color: #007AFF;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.read-more::before {
+    content: "🔗 ";
+}
+
+.read-more:hover {
+    background-color: #F0F7FF;
+}
+
+/* Message d'erreur ou d'information */
+.news-message {
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+    color: #6B6B6B;
+    border-radius: 12px;
+    border: 1px solid #E5E5E5;
+    background-color: white;
+}
+
+
+/* STYLE DU FICHIER CHAT */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chat-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.chat-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Style pour le message de bienvenue initial */
+.welcome-message {
+    text-align: center;
+    margin: 40px auto;
+}
+
+.welcome-message .message-content {
+    background-color: transparent;
+    font-size: 22px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Styles des messages */
+.message-content {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+/* Messages de l'utilisateur */
+.user-message {
+    align-self: flex-end;
+}
+
+.user-message .message-content {
+    background-color: #f0f0f0;
+    color: #000;
+    border-radius: 16px 16px 0 16px;
+    align-self: flex-end;
+}
+
+/* Messages de l'assistant */
+.assistant-message {
+    align-self: flex-start;
+}
+
+.assistant-message .message-content {
+    background-color: transparent;
+    color: #000;
+    border-radius: 16px 16px 16px 0;
+}
+
+/* Animation de "en train d'écrire" */
+.typing-indicator {
+    align-self: flex-start;
+}
+
+.typing-animation {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+}
+
+.typing-animation span {
+    width: 8px;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-animation span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-animation span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-animation span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Zone de saisie du message */
+.chat-input-container {
+    margin-top: auto;
+    padding: 10px 0;
+}
+
+.chat-form {
+    margin-bottom: 10px;
+}
+
+.input-wrapper {
+    display: flex;
+    background-color: #f5f5f5;
+    border-radius: 24px;
+    padding: 0 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.chat-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 16px;
+    font-size: 14px;
+    resize: none;
+    max-height: 120px;
+    outline: none;
+}
+
+.send-button {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.send-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Avertissement en bas */
+.disclaimer {
+    text-align: center;
+    margin-top: 12px;
+    padding: 10px;
+}
+
+.disclaimer p {
+    color: #888;
+    font-size: 12px;
+}
+
+/* Styles pour les conversations récentes dans la sidebar */
+.recent-conversations {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.conversation-item .nav-link {
+    padding-right: 8px;
+}
+
+.conversation-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+}
+
+.conversation-actions {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.conversation-item:hover .conversation-actions {
+    opacity: 1;
+}
+
+.delete-conversation {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.delete-conversation:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.no-conversations {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 8px 12px;
+}
