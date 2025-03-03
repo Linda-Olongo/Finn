@@ -93,6 +93,7 @@ function loadRecentConversations() {
                 <div class="nav-item conversation-item" data-conversation-id="${id}">
                     <a href="/chat/${id}" class="nav-link conversation-link">
                         <div class="nav-content">
+                            
                             <span class="conversation-title">${conv.title}</span>
                         </div>
                         <div class="conversation-actions">
@@ -120,7 +121,7 @@ function loadRecentConversations() {
             conversationsContainer.innerHTML = '<div class="no-conversations">Failed to load conversations</div>';
         });
 }
-c
+
 /**
  * Configure la boîte de dialogue de confirmation de suppression
  */
