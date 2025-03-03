@@ -97,9 +97,6 @@
                             <div class="nav-item conversation-item" data-conversation-id="{{ conv_id }}">
                                 <a href="{{ url_for('main.chat', conversation_id=conv_id) }}" class="nav-link conversation-link">
                                     <div class="nav-content">
-                                        <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                        </svg>
                                         <span class="conversation-title">{{ conv.title }}</span>
                                     </div>
                                     <div class="conversation-actions">

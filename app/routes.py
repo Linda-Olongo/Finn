@@ -4,7 +4,8 @@ from app.data.news_handler import NewsHandler # Import des actualités
 from app.nlp.GeminiHandler import GeminiHandler  # Import du GeminiHandler
 import uuid
 import datetime
-
+import re
+import html
 
 main = Blueprint('main', __name__)
 news_handler = NewsHandler()
@@ -54,7 +55,8 @@ def process_chat():
     message = data.get('message', '')
     conversation_id = data.get('conversation_id', '')
     
-    # Si conversation_id est vide ou n'existe pas, créer une nouvelle conversation
+    # Vérifier si l'ID de conversation est valide et que la conversation existe
+    # Sinon, créer une nouvelle conversation
     if not conversation_id or conversation_id not in conversations:
         conversation_id = str(uuid.uuid4())
         conversations[conversation_id] = {
@@ -63,30 +65,36 @@ def process_chat():
             'title': 'New Conversation'
         }
     
+    # Échapper le HTML pour éviter les injections XSS
+    message_safe = html.escape(message)
+    
     # Ajouter le message de l'utilisateur à la conversation
     conversations[conversation_id]['messages'].append({
         'role': 'user',
-        'content': message,
+        'content': message_safe,
         'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     
     # Si c'est le premier message, utiliser les premiers mots comme titre
     if len(conversations[conversation_id]['messages']) == 1:
-        title_words = message.split()[:3]
+        title_words = message_safe.split()[:3]
         conversations[conversation_id]['title'] = ' '.join(title_words) + '...'
     
     # Traiter la requête avec GeminiHandler
     response = gemini_handler.process_query(message)
     
+    # Préserver le formatage de la réponse
+    assistant_message = response['message']
+    
     # Ajouter la réponse à la conversation
     conversations[conversation_id]['messages'].append({
         'role': 'assistant',
-        'content': response['message'],
+        'content': assistant_message,
         'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     
     return jsonify({
-        'response': response['message'],
+        'response': assistant_message,
         'conversation_id': conversation_id
     })
 

@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 // Fonctionnalités globales pour l'application Finn
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -92,9 +93,6 @@ function loadRecentConversations() {
                 <div class="nav-item conversation-item" data-conversation-id="${id}">
                     <a href="/chat/${id}" class="nav-link conversation-link">
                         <div class="nav-content">
-                            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
                             <span class="conversation-title">${conv.title}</span>
                         </div>
                         <div class="conversation-actions">
@@ -122,7 +120,7 @@ function loadRecentConversations() {
             conversationsContainer.innerHTML = '<div class="no-conversations">Failed to load conversations</div>';
         });
 }
-
+c
 /**
  * Configure la boîte de dialogue de confirmation de suppression
  */
@@ -398,7 +396,113 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const welcomeScreen = document.getElementById('welcomeScreen');
     const chatContainer = document.querySelector('.chat-container');
-    const conversationId = chatContainer.dataset.conversationId;
+    // Récupérer l'ID de conversation depuis l'attribut data
+    const conversationId = chatContainer.dataset.conversationId || '';
+
+    // Fonction pour convertir du texte simple en HTML avec formatage
+    function formatMessageContent(text) {
+        if (!text) return '';
+        
+        // Traitement des tableaux ASCII
+        if (text.includes('|')) {
+            // Recherche des motifs de tableau
+            const hasTablePattern = text.match(/\|[\s-]*\|/);
+            if (hasTablePattern) {
+                let lines = text.split('\n');
+                let tableStarted = false;
+                let tableBuffer = [];
+                let formattedText = '';
+                
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('|') && !tableStarted) {
+                        // Début d'un tableau
+                        tableStarted = true;
+                        tableBuffer.push(lines[i]);
+                    } else if (tableStarted && lines[i].includes('|')) {
+                        // Ligne dans un tableau existant
+                        tableBuffer.push(lines[i]);
+                    } else if (tableStarted) {
+                        // Fin du tableau, convertir
+                        formattedText += convertAsciiToHtmlTable(tableBuffer);
+                        tableBuffer = [];
+                        tableStarted = false;
+                        formattedText += lines[i] + '\n';
+                    } else {
+                        // Texte normal
+                        formattedText += lines[i] + '\n';
+                    }
+                }
+                
+                // Si le tableau se termine à la fin du texte
+                if (tableStarted && tableBuffer.length > 0) {
+                    formattedText += convertAsciiToHtmlTable(tableBuffer);
+                }
+                
+                text = formattedText;
+            }
+        }
+        
+        // Conversion des sauts de ligne en balises <p>
+        text = '<p>' + text.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+        
+        // Conversion du texte en gras
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
+        
+        // Conversion du texte en italique
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+        
+        // Conversion des listes
+        text = text.replace(/^\s*[-*]\s+(.*?)$/gm, '<li>$1</li>');
+        text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+        
+        // Conversion des listes numérotées
+        text = text.replace(/^\s*\d+\.\s+(.*?)$/gm, '<li>$1</li>');
+        text = text.replace(/(<li>.*?<\/li>)/gs, '<ol>$1</ol>');
+        
+        return text;
+    }
+    
+    // Fonction pour convertir un tableau ASCII en tableau HTML
+    function convertAsciiToHtmlTable(tableLines) {
+        if (!tableLines || tableLines.length === 0) return '';
+        
+        const cleanedLines = tableLines.map(line => {
+            return line.trim().replace(/^\||\|$/g, ''); // Enlève les | au début et à la fin
+        });
+        
+        let html = '<table class="finn-table">';
+        
+        // Traiter l'en-tête
+        html += '<thead><tr>';
+        const headerCells = cleanedLines[0].split('|');
+        headerCells.forEach(cell => {
+            html += `<th>${cell.trim()}</th>`;
+        });
+        html += '</tr></thead>';
+        
+        // Ignorer la ligne de séparation si elle existe
+        let startIndex = 1;
+        if (cleanedLines.length > 1 && cleanedLines[1].replace(/[|\s-]/g, '').length === 0) {
+            startIndex = 2;
+        }
+        
+        // Traiter le corps du tableau
+        html += '<tbody>';
+        for (let i = startIndex; i < cleanedLines.length; i++) {
+            html += '<tr>';
+            const cells = cleanedLines[i].split('|');
+            cells.forEach(cell => {
+                html += `<td>${cell.trim()}</td>`;
+            });
+            html += '</tr>';
+        }
+        html += '</tbody>';
+        
+        html += '</table>';
+        return html;
+    }
 
     // Définir le mode initial (welcome ou chat)
     function setInitialMode() {
@@ -443,12 +547,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 addAssistantMessage(msg.content);
             }
         });
+        
+        // Scroller vers le bas après avoir chargé tous les messages
+        scrollToBottom();
     }
     
     // Ajustement automatique de la hauteur du textarea
     messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
     
     // Soumission du formulaire
@@ -470,6 +577,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Afficher l'indicateur de saisie
             const typingIndicator = addTypingIndicator();
             
+            // Obtenir l'ID de conversation courant (pourrait avoir été mis à jour)
+            const currentConversationId = chatContainer.dataset.conversationId || '';
+            
             // Envoyer la requête au serveur
             fetch('/api/chat', {
                 method: 'POST',
@@ -478,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({ 
                     message: message,
-                    conversation_id: conversationId || '' // S'assurer que c'est une chaîne vide si null
+                    conversation_id: currentConversationId
                 }),
             })
             .then(response => response.json())
@@ -489,13 +599,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Afficher la réponse
                 addAssistantMessage(data.response);
                 
-                // Mettre à jour l'URL avec le nouvel ID de conversation si nécessaire
-                if (window.location.pathname.endsWith('/chat')) {
-                    // Mettre à jour l'URL
-                    history.pushState({}, '', `/chat/${data.conversation_id}`);
-                    
-                    // Mettre à jour l'ID de conversation pour les futurs messages
+                // Mettre à jour l'ID de conversation dans le DOM si nécessaire
+                if (data.conversation_id && (!currentConversationId || data.conversation_id !== currentConversationId)) {
                     chatContainer.dataset.conversationId = data.conversation_id;
+                    
+                    // Mettre à jour l'URL uniquement si nous sommes sur une nouvelle conversation
+                    if (!currentConversationId) {
+                        history.pushState({}, '', `/chat/${data.conversation_id}`);
+                    }
                 }
             })
             .catch(error => {
@@ -511,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const template = document.getElementById('userMessageTemplate');
         const messageElement = template.content.cloneNode(true);
         
-        messageElement.querySelector('p').textContent = message;
+        messageElement.querySelector('.message-text').textContent = message;
         chatMessages.appendChild(messageElement);
         
         // Activer le bouton d'édition
@@ -522,10 +633,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageInput.value = message;
                 messageInput.focus();
                 messageInput.style.height = 'auto';
-                messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + 'px';
+                messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
                 
                 // Faire défiler jusqu'à la zone de saisie
-                messageInput.scrollIntoView({ behavior: 'smooth' });
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
             });
         }
         
@@ -538,7 +652,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const template = document.getElementById('assistantMessageTemplate');
         const messageElement = template.content.cloneNode(true);
         
-        messageElement.querySelector('p').textContent = message;
+        // Appliquer le formatage au message
+        const formattedMessage = formatMessageContent(message);
+        messageElement.querySelector('.message-text').innerHTML = formattedMessage;
+        
         chatMessages.appendChild(messageElement);
         
         // Activer le bouton de copie
@@ -579,7 +696,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour scroller vers le bas
     function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
     }
     
     // Permettre l'envoi avec Entrée, mais Shift+Entrée pour nouvelle ligne
