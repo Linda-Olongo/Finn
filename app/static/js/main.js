@@ -80,20 +80,15 @@ function loadRecentConversations() {
     fetch('/api/conversations')
         .then(response => response.json())
         .then(conversations => {
-            if (Object.keys(conversations).length === 0) {
-                conversationsContainer.innerHTML = '<div class="no-conversations">No recent conversations</div>';
-                return;
-            }
 
             let conversationsHtml = '';
             
-            // Parcourir les conversations (max 10 pour éviter de surcharger la sidebar)
+            // Construire le HTML pour les conversations
             Object.entries(conversations).slice(0, 10).forEach(([id, conv]) => {
                 conversationsHtml += `
                 <div class="nav-item conversation-item" data-conversation-id="${id}">
                     <a href="/chat/${id}" class="nav-link conversation-link">
                         <div class="nav-content">
-                            
                             <span class="conversation-title">${conv.title}</span>
                         </div>
                         <div class="conversation-actions">
@@ -109,17 +104,33 @@ function loadRecentConversations() {
                 </div>`;
             });
 
+            // IMPORTANT: Mettre à jour le DOM avec le nouveau contenu
             conversationsContainer.innerHTML = conversationsHtml;
 
-            // Attacher les gestionnaires d'événements pour les boutons de suppression
+            // Réattacher les gestionnaires d'événements
             document.querySelectorAll('.delete-conversation').forEach(button => {
                 button.addEventListener('click', handleDeleteButtonClick);
             });
+            
+            // Mettre en surbrillance la conversation active si nécessaire
+            highlightActiveConversation();
         })
         .catch(error => {
             console.error('Error loading conversations:', error);
             conversationsContainer.innerHTML = '<div class="no-conversations">Failed to load conversations</div>';
         });
+}
+
+// Mettre en surbrillance la conversation active
+function highlightActiveConversation() {
+    const currentConversationId = document.querySelector('.chat-container')?.dataset.conversationId;
+    if (currentConversationId) {
+        document.querySelectorAll('.conversation-item').forEach(item => {
+            if (item.dataset.conversationId === currentConversationId) {
+                item.querySelector('.nav-link').classList.add('active');
+            }
+        });
+    }
 }
 
 /**

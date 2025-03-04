@@ -62,11 +62,10 @@ def process_chat():
         conversations[conversation_id] = {
             'messages': [],
             'created_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'title': 'New Conversation'
+            'title': 'New Conversation'  # Titre temporaire
         }
     
-    # Échapper le HTML pour éviter les injections XSS
-    message_safe = html.escape(message)
+    message_safe = message
     
     # Ajouter le message de l'utilisateur à la conversation
     conversations[conversation_id]['messages'].append({
@@ -75,10 +74,34 @@ def process_chat():
         'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     
-    # Si c'est le premier message, utiliser les premiers mots comme titre
+    # Si c'est le premier message, générer un titre intelligent avec Gemini
     if len(conversations[conversation_id]['messages']) == 1:
-        title_words = message_safe.split()[:3]
-        conversations[conversation_id]['title'] = ' '.join(title_words) + '...'
+        try:
+            # Demander à Gemini un titre court
+            title_prompt = f"Génère un titre TRÈS court (maximum 3 mots) qui résume cette requête: '{message}'"
+            title_response = gemini_handler.process_query(title_prompt)
+            title = title_response['message'].strip()
+            
+            # Nettoyage du titre
+            title = re.sub(r'^["\'«]|["\'.!?:,;»]$', '', title).strip()
+            
+            # Vérification supplémentaire de longueur
+            if len(title) > 25:  # Limite stricte à 25 caractères
+                title = title[:22]
+                
+            # Vérifier que le titre est pertinent
+            mots_non_pertinents = ["titre", "voici", "le titre", "résumé"]
+            if not title or any(title.lower() == mot for mot in mots_non_pertinents):
+                raise Exception("Titre non pertinent généré")
+                
+        except Exception as e:
+            # Fallback avec limite stricte (3 mots maximum)
+            words = message_safe.split()[:3]
+            title = " ".join(words)
+            if len(title) > 25:
+                title = title[:22] 
+        
+        conversations[conversation_id]['title'] = title
     
     # Traiter la requête avec GeminiHandler
     response = gemini_handler.process_query(message)
@@ -115,9 +138,13 @@ def get_conversation_messages(conversation_id):
 
 @main.route('/api/conversations', methods=['GET'])
 def get_conversations():
-    # Retourner toutes les conversations, triées par date
+    # Retourner uniquement les conversations non vides, triées par date
+    non_empty_conversations = {
+        k: v for k, v in conversations.items() 
+        if 'messages' in v and len(v['messages']) > 0
+    }
     sorted_conversations = {k: v for k, v in sorted(
-        conversations.items(), 
+        non_empty_conversations.items(), 
         key=lambda item: item[1]['created_at'], 
         reverse=True
     )}

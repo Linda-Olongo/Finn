@@ -686,7 +686,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 160px;
+    max-width: 190px;
 }
 
 .conversation-actions {
