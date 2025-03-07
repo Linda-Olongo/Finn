@@ -1,0 +1,9 @@
+2024-12-13 18:52:43,731 - __main__ - INFO - Configuration API chargée
+2024-12-13 18:53:12,342 - __main__ - WARNING - Erreur sauvegarde cache stock_AAPL_1y: Object of type Timestamp is not JSON serializable
+2024-12-13 18:55:42,405 - __main__ - INFO - Configuration API chargée
+2024-12-13 18:55:54,332 - __main__ - WARNING - Erreur lecture cache stock_AAPL_1y: Expecting value: line 1 column 68 (char 67)
+2024-12-13 18:55:54,576 - __main__ - ERROR - Erreur récupération action AAPL: Impossible de vérifier que AAPL est une action valide
+2024-12-13 18:55:55,595 - __main__ - WARNING - Erreur sauvegarde cache crypto_dinari-aapl-dshares_365: Object of type Timestamp is not JSON serializable
+2024-12-13 18:55:55,607 - __main__ - WARNING - Erreur lecture cache stock_AAPL_1y: Expecting value: line 1 column 68 (char 67)
+2024-12-13 18:55:55,814 - __main__ - ERROR - Erreur récupération action AAPL: Impossible de vérifier que AAPL est une action valide
+2024-12-13 19:04:50,785 - __main__ - ERROR - Erreur récupération info AAPL: Impossible de trouver des informations pour AAPL
