@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 # Charger les variables d'environnement depuis .env
 load_dotenv()
 
+# Permettre OAuth2 en HTTP pour le développement local
+if os.environ.get('FLASK_ENV') == 'development':
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 app = create_app()
 
 if __name__ == "__main__":

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' stroke='%23000000' fill='none' stroke-width='2'/></svg>">    <title>Finn</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centrage vertical */
+            height: 100vh;
+            width: 100%;
+            box-sizing: border-box; /* S'assure que le padding ne déborde pas */
+        }
+
+        .logo-container {
+            position: relative;
+            display: flex;
+            justify-content: center; /* Centrage horizontal des lettres */
+            letter-spacing: -0.05em;
+        }
+
+        .letter {
+            font-size: 30vw;
+            font-weight: 700;
+            position: relative;
+            color: transparent;
+            -webkit-text-stroke: 1.25px rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-top: 5vh;
+            margin-bottom: 7vh;
+            opacity: 0.9;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center; /* Centrage horizontal des boutons */
+            gap: 40px;
+        }
+
+        .button {
+            color: #999;
+            text-decoration: none;
+            font-size: 1.2rem;
+            position: relative;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            color: #fff;
+        }
+
+        .button:hover::after {
+            background-color: #fff;
+            height: 2px;
+        }
+
+        /* Animation de fade in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter, .tagline, .buttons-container {
+            animation: fadeIn 1s forwards;
+            opacity: 0;
+        }
+
+        .letter:nth-child(1) { animation-delay: 0.2s; }
+        .letter:nth-child(2) { animation-delay: 0.4s; }
+        .letter:nth-child(3) { animation-delay: 0.6s; }
+        .letter:nth-child(4) { animation-delay: 0.8s; }
+        .tagline { animation-delay: 1.2s; }
+        .buttons-container { animation-delay: 1.5s; }
+
+        /* Media query pour écrans mobiles (moins de 768px) */
+        @media (max-width: 768px) {
+            .letter {
+                font-size: 28vw; /* Augmenté de 25vw à 28vw pour que "FINN" soit encore plus grand */
+            }
+
+            .tagline {
+                font-size: 0.9rem; /* Réduit de 1rem à 0.9rem pour accentuer la différence avec "FINN" */
+                margin-top: 3vh; /* Réduction de l'espacement pour mobile */
+                margin-bottom: 5vh;
+            }
+
+            .button {
+                font-size: 0.9rem; /* "Sign Up / Sign In" plus petit que "Discover Finn 2.1 Prime" */
+            }
+
+            .buttons-container {
+                gap: 20px; /* Réduction de l'espacement entre les boutons */
+            }
+        }
+
+        /* Media query pour très petits écrans (moins de 400px) */
+        @media (max-width: 400px) {
+            .letter {
+                font-size: 25vw; /* Réduit légèrement pour très petits écrans, mais reste bien plus grand que tagline */
+            }
+
+            .tagline {
+                font-size: 0.8rem; /* Réduit de 0.9rem à 0.8rem pour très petits écrans */
+            }
+
+            .button {
+                font-size: 0.8rem; /* Boutons encore plus petits */
+            }
+
+            .buttons-container {
+                gap: 15px; /* Espacement réduit pour très petits écrans */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <div class="letter" id="letter-f">F</div>
+            <div class="letter" id="letter-i">I</div>
+            <div class="letter" id="letter-n">N</div>
+            <div class="letter" id="letter-n2">N</div>
+        </div>
+
+        <div class="tagline">Discover Finn 2.1 Prime</div>
+
+        <div class="buttons-container">
+            <a href="/inscription" class="button">Sign Up</a>
+            <a href="/connexion" class="button">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fonction pour créer l'effet de contour lumineux avec intensité équilibrée
+            function createOutlineEffect(letterId) {
+                const element = document.getElementById(letterId);
+                
+                function updateEffect() {
+                    const time = Date.now() / 1800; // Fréquence légèrement plus lente
+                    const intensity = 0.15 + 0.1 * Math.sin(time); // Amplitude réduite
+                    element.style.webkitTextStroke = `1.25px rgba(255, 255, 255, ${intensity})`;
+                    element.style.textShadow = `0 0 1px rgba(255, 255, 255, ${intensity * 0.2})`;
+                    requestAnimationFrame(updateEffect);
+                }
+                
+                updateEffect();
+            }
+            
+            // Appliquer l'effet à chaque lettre
+            createOutlineEffect('letter-f');
+            createOutlineEffect('letter-i');
+            createOutlineEffect('letter-n');
+            createOutlineEffect('letter-n2');
+            
+            // On supprime la redirection automatique vers /chat
+            // Laisse l'utilisateur sur loading.html après déconnexion
+        });
+    </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91b501450e56bd43',t:'MTc0MTEyOTM4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

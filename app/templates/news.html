@@ -1,8 +1,18 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="news-container">
-    <!-- En-tête centré -->
+    <!-- Header compact pour mobile -->
+    <div class="mobile-header">
+        <!-- Supprimez l'ID floatingMenuBtn qui entre en conflit avec celui de base.html -->
+        <button type="button" class="floating-menu-btn news-menu-btn" aria-label="Open Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <h1 class="mobile-header-title">News</h1>
+    </div>
+
+    <!-- En-tête centré (visible sur desktop et mobile, mais ajusté sur mobile) -->
     <div class="header-center">
         <h1>Global & Business News</h1>
         <p class="subtitle">Dive into the heart of economic and business news, and master global market trends with sharp and instant analysis.</p>
@@ -50,7 +60,7 @@
             </p>
         </div>
 
-        <!-- Navigation des catégories -->
+        <!-- Navigation des catégories (tabs) -->
         <div class="category-tabs">
             {% for category in categories %}
                 <a href="{{ url_for('main.news', category=category) }}"
@@ -97,4 +107,380 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+/* STYLE DU FICHIER NEWS - Corrigé pour correspondre exactement aux captures d'écran */
+.news-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 30px;
+    min-height: 100vh;
+    background-color: var(--content-bg);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Fixe le problème de scroll montrant le fond gris */
+.main-content {
+    background-color: var(--content-bg);
+    overflow-x: hidden;
+}
+
+/* Règle pour la scrollbar discrète comme dans ChatGPT */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+/* Header compact pour mobile */
+.mobile-header {
+    display: none; /* Caché par défaut (visible uniquement sur mobile) */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px; /* Hauteur du header */
+    background-color: var(--content-bg);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 200;
+    align-items: center;
+    padding: 0 10px;
+}
+
+/* Style spécifique pour le bouton hamburger dans le header News */
+.news-menu-btn {
+    position: static; /* Retirer le positionnement fixe */
+    background-color: var(--content-bg);
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 250; /* Plus élevé que les autres éléments */
+}
+
+/* Ajustement pour le mode sidebar cachée */
+body.sidebar-hidden .mobile-header {
+    left: 0; /* Assure que le header prend toute la largeur */
+}
+
+.mobile-header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--content-text);
+    margin: 0;
+}
+
+/* Ajustement du bouton hamburger dans le header */
+.mobile-header .floating-menu-btn {
+    position: static; /* Retirer le positionnement fixe */
+    background-color: var(--content-bg);
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+/* Header centré (desktop et mobile) */
+.header-center {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header-center h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--content-text);
+}
+
+.header-center .subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Barre de recherche */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+#company-search {
+    width: 100%;
+    padding: 14px 44px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--content-bg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    color: var(--content-text);
+}
+
+#company-search:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+
+/* Catégorie */
+.category-content {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.category-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--content-text);
+}
+
+.category-description {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* Tabs de catégories - alignés exactement comme dans l'image 1 */
+.category-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0;
+    scrollbar-width: none; /* Pour Firefox */
+}
+
+.category-tabs::-webkit-scrollbar {
+    display: none; /* Pour Chrome, Safari et Opera */
+}
+
+.tab {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
+    margin: 0;
+}
+
+.tab:hover {
+    color: var(--content-text);
+}
+
+.tab.active {
+    color: var(--content-text);
+    border-bottom: 2px solid var(--content-text);
+    font-weight: 500;
+    background-color: transparent; /* Enlever le fond grisé */
+}
+
+/* Pour enlever le fond grisé des éléments actifs dans la sidebar */
+.nav-link.active {
+    background-color: transparent; /* Override la variable --nav-active */
+    font-weight: 500;
+}
+
+/* Articles - Style correspondant aux images */
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: transparent;
+}
+
+.news-item {
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--content-bg);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 0;
+}
+
+.news-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.news-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.news-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    color: var(--content-text);
+}
+
+.news-summary {
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 2px solid var(--border-color);
+}
+
+.read-more {
+    display: inline-flex;
+    align-items: center;
+    color: var(--content-text); /* Noir à l'état normal */
+    font-size: 14px;
+    text-decoration: none; /* Pas de soulignement par défaut */
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.read-more::before {
+    content: "🔗";
+    margin-right: 6px;
+}
+
+.read-more:hover {
+    color: var(--content-text); /* Garder la couleur noire au survol */
+    background-color: #e0e0e0; /* Fond gris au survol, comme sur desktop */
+}
+
+/* Message d'erreur ou d'information */
+.news-message {
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+    color: var(--text-muted);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--content-bg);
+}
+
+/* Responsive design - ajusté pour correspondre à l'affichage mobile */
+@media (max-width: 768px) {
+    .news-container {
+        padding: 15px;
+        padding-top: 70px; /* Ajouter un padding-top pour passer sous le mobile-header */
+    }
+
+    /* Masquer le bouton hamburger global sur mobile */
+    #floatingMenuBtn {
+        display: none !important; 
+    }
+    
+    .mobile-header {
+        display: flex; /* Afficher le header compact sur mobile */
+    }
+
+    /* Ajuster le header-center pour qu'il apparaisse sous le mobile-header */
+    .header-center {
+        margin-top: 20px; /* Ajouter un espace pour ne pas être trop collé au mobile-header */
+    }
+
+    .header-center h1 {
+        font-size: 28px; /* Réduire légèrement la taille sur mobile */
+    }
+    
+    .header-center .subtitle {
+        font-size: 14px;
+        max-width: 90%; /* Réduire les marges gauche et droite en prenant 90% de la largeur */
+        margin: 0 auto;
+    }
+
+    /* Réduire la largeur de la barre de recherche sur mobile */
+    .search-container {
+        max-width: 90%; /* Réduire la largeur à 90% de l'écran */
+    }
+
+    /* Réduire les marges gauche et droite pour category-description */
+    .category-description {
+        max-width: 90%; /* Réduire les marges gauche et droite en prenant 90% de la largeur */
+        margin: 0 auto;
+    }
+    
+    .tab {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    
+    .news-item {
+        padding: 16px;
+    }
+    
+    .news-title {
+        font-size: 16px;
+    }
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cibler le bouton hamburger dans le header News
+        const newsMenuBtn = document.querySelector('.news-menu-btn');
+        
+        if (newsMenuBtn) {
+            newsMenuBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Référence aux éléments nécessaires
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.querySelector('.main-content');
+                const body = document.body;
+                
+                // Basculer les classes pour ouvrir/fermer le menu
+                if (sidebar) {
+                    sidebar.classList.toggle('collapsed');
+                    sidebar.classList.toggle('active');
+                }
+                
+                if (mainContent) {
+                    mainContent.classList.toggle('expanded');
+                }
+                
+                if (body) {
+                    body.classList.toggle('sidebar-hidden');
+                }
+                
+                // Sauvegarder l'état
+                const isCollapsed = sidebar ? sidebar.classList.contains('collapsed') : false;
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+            });
+        }
+    });
+    </script>
 {% endblock %}

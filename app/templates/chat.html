@@ -1,442 +1,764 @@
-{% extends "base.html" %}
-
-{% block title %}Finn - Financial Assistant{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="chat-container" {% if conversation_id %}data-conversation-id="{{ conversation_id }}"{% endif %}>
+<div class="chat-container" data-conversation-id="{{ conversation_id if conversation_id else '' }}">
     <div class="welcome-screen" id="welcomeScreen">
-        <!-- Logo et titre centrés -->
-        <div class="finn-header">
-            <div class="finn-logo">
-                <svg width="55" height="55" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 17L12 22L22 17" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 12L12 17L22 12" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <div class="welcome-content">
+            <div class="logo">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="finn-title">
-                <span>Finn</span>
-                <span class="subtitle">Financial Assistant</span>
-            </div>
-        </div>
-
-        <!-- Message d'introduction accrocheur -->
-        <div class="intro-message">
-            <p>Need financial insights? I forecast, interpret, and guide—just ask!</p>
+            <h1>Finn 2.1 Prime</h1>
+            <h2>Financial Assistant</h2>
+            <p>Ask me anything about finance and more!</p>
         </div>
     </div>
 
-    <!-- Corps du chat avec messages -->
     <div class="chat-messages" id="chatMessages">
-        <!-- Les messages seront ajoutés dynamiquement ici -->
+        <!-- Messages will be dynamically inserted here -->
     </div>
 
-    <!-- Zone de saisie du message (agrandie) -->
     <div class="chat-input-container">
         <form id="chatForm" class="chat-form">
             <div class="input-wrapper">
-                <textarea 
-                    id="messageInput" 
-                    class="chat-input" 
-                    placeholder="Ask a question or request..." 
-                    rows="1"
-                    autofocus
-                ></textarea>
+                <textarea id="messageInput" class="chat-input" placeholder="Ask a question" rows="1"></textarea>
                 <button type="submit" class="send-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="M22 2L11 13"></path>
-                        <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
             </div>
         </form>
-        
-        <!-- Avertissement en bas -->
         <div class="disclaimer">
-            <p>Finn may make mistakes. Verify important information.</p>
+            <p>Finn may make mistakes. Consider checking important information.</p>
         </div>
     </div>
 </div>
 
-<!-- Templates  -->
+<!-- Templates for messages -->
 <template id="userMessageTemplate">
-    <div class="user-message message-wrapper">
-        <div class="edit-button-container">
-            <button class="edit-message" title="Edit">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-            </button>
-        </div>
+    <div class="message user-message">
         <div class="message-content">
-            <div class="message-text"></div>
+            <p class="message-text"></p>
         </div>
+        <button class="edit-message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+        </button>
     </div>
 </template>
 
 <template id="assistantMessageTemplate">
-    <div class="assistant-message message-wrapper">
+    <div class="message assistant-message">
         <div class="message-content">
-            <div class="message-text"></div>
-            <div class="message-actions">
-                <button class="copy-message" title="Copy">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
-            </div>
+            <p class="message-text"></p>
         </div>
+        <button class="copy-message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+        </button>
     </div>
 </template>
 
 <template id="typingIndicatorTemplate">
-    <div class="assistant-message typing-indicator">
-        <div class="message-content">
-            <div class="typing-animation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <div class="typing-indicator">
+        <div class="typing-animation">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </div>
 </template>
 
 <style>
-/* Styles spécifiques pour le chat */
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-}
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--content-bg);
+        position: relative;
+        overflow: hidden; /* Cacher le débordement */
+    }
 
-/* Écran de bienvenue optimisé pour centrage vertical */
-.welcome-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Centre verticalement */
-    position: absolute; /* Position absolue pour centrer parfaitement */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 160px; /* Espace un peu plus grand pour la zone de saisie */
-    text-align: center;
-    padding: 0 20px;
-    z-index: 10;
-    background-color: white;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Logo et titre */
-.finn-header {
+    /* Écran de bienvenue */
+    .welcome-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 10px;
-}
-
-.finn-logo {
-    margin-bottom: 15px;
-}
-
-.finn-title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.finn-title span {
-    font-size: 30px;
-    font-weight: 600;
-    color: #333;
-}
-
-.finn-title .subtitle {
-    font-size: 14px;
-    color: #c0c0c0;
-    margin-top: 5px;
-    font-weight: normal;
-}
-
-/* Message d'introduction */
-.intro-message {
-    max-width: 600px;
-}
-
-.intro-message p {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #333;
-}
-
-/* Zone de messages */
-.chat-messages {
+    justify-content: center; /* Déjà présent, mais on le garde pour confirmation */
     flex: 1;
-    overflow-y: auto;
-    padding-left: 20px; /* Réduire l'espace à gauche */
-    padding-right: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
-    margin-bottom: 150px; /* Espace pour la zone de saisie */
+    text-align: center;
+    padding: 20px; /* Réduire le padding pour éviter un décalage excessif */
+    min-height: 60vh; /* Assurer une hauteur minimale pour mieux répartir l'espace */
 }
 
-/* Masquer la barre de défilement pour Chrome, Safari et Opera */
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto; /* Pousse le contenu vers le centre en haut */
+    margin-bottom: auto; /* Pousse le contenu vers le centre en bas */
+}
+    .welcome-content .logo svg {
+        width: 56px; /* Augmentation de la taille du logo */
+        height: 56px;
+        color: var(--text-color);
+    }
+
+    .welcome-content h1 {
+        font-size: 32px; /* Augmentation de la taille de "Finn 2.1 Prime" */
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .welcome-content h2 {
+        font-size: 14px; /* Réduction de la taille de "Financial Assistant" */
+        font-weight: 400;
+        color: var(--text-muted); /* Gris clair comme "Par ChatGPT" */
+    }
+
+    .welcome-content p {
+        font-size: 14px; /* Réduction de la taille du texte */
+        color: var(--text-color); /* Noir */
+        max-width: 400px;
+        margin-top: 8px;
+    }
+
+    /* Cacher l'écran de bienvenue quand le chat est actif */
+    .chat-container.chat-active .welcome-screen {
+        display: none;
+    }
+
+    .chat-messages {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow-y: auto;
+        padding: 20px;
+        padding-right: 10px; /* Laisser de la place pour la barre de défilement */
+    }
+
 .chat-messages::-webkit-scrollbar {
-    display: none;
+    width: 6px; /* Largeur plus fine */
 }
 
-/* Styles des messages */
-.message-wrapper {
-    position: relative;
-    width: 100%;
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent; /* Fond transparent */
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Couleur plus subtile */
+    border-radius: 3px; /* Coins arrondis */
+    border: none; /* Pas de bordure */
+}
+
+    /* Styles des messages */
+.message {
     display: flex;
-    margin-bottom: 15px;
     align-items: flex-start;
-}
-
-.user-message {
-    justify-content: flex-end;
-}
-
-.edit-button-container {
+    gap: 8px;
     position: relative;
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
-}
-
-.edit-message {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-}
-
-.user-message:hover .edit-message {
-    opacity: 1;
-}
-
-.message-content {
-    max-width: 85%;
-    border-radius: 18px;
-    position: relative;
-}
-
-.user-message .message-content {
-    background-color: #f0f0f0;
-    padding: 12px 16px;
-    border-radius: 18px 18px 0 18px;
-}
-
-.assistant-message .message-content {
-    background-color: transparent;
-    color: #000;
-    padding: 0;
-    width: 90%;
-    text-align: justify;
-}
-
-.message-text {
-    word-wrap: break-word;
-}
-
-/* Format correctement les éléments de contenu */
-.message-text p {
-    margin-bottom: 10px;
-}
-
-.message-text strong, .message-text b {
-    font-weight: bold;
-}
-
-.message-text table {
-    border-collapse: collapse;
-    margin: 15px 0;
     width: 100%;
+    margin-bottom: 8px; /* Ajouter un espace entre les messages */
 }
 
-.message-text table, .message-text th, .message-text td {
-    border: 1px solid #ddd;
-}
-
-.message-text th, .message-text td {
-    padding: 8px;
-    text-align: left;
-}
-
-.message-text ul, .message-text ol {
-    margin-left: 20px;
-    margin-bottom: 10px;
-}
-
-.message-actions {
-    display: flex;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    margin-top: 5px;
-    justify-content: flex-start;
-}
-
-.message-content:hover .message-actions {
-    opacity: 1;
-}
-
-.message-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.message-actions button:hover, .edit-message:hover {
-    color: #333;
-}
-
-/* Animation de "en train d'écrire" */
-.typing-animation {
-    display: flex;
-    gap: 4px;
-}
-
-.typing-animation span {
-    width: 8px;
-    height: 8px;
-    background-color: #aaa;
-    border-radius: 50%;
-    animation: typing 1.4s infinite ease-in-out both;
-}
-
-.typing-animation span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.typing-animation span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-animation span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes typing {
-    0%, 100% {
-        transform: scale(0.6);
-        opacity: 0.5;
+    /* Modification pour les messages courts */
+    .message-text {
+        white-space: pre-wrap; /* Permettre le retour à la ligne mais pas forcé */
+        word-break: break-word; /* Couper les mots trop longs si nécessaire */
+        display: inline-block; /* Pour que les messages courts restent sur une ligne */
+        min-width: 20px; /* Largeur minimale pour les très courts messages */
     }
-    50% {
-        transform: scale(1);
-        opacity: 1;
+
+    .message-content {
+        padding: 12px 16px;
+        border-radius: 16px;
+        word-wrap: break-word;
     }
-}
 
-/* Zone de saisie du message - fixée en bas */
-.chat-input-container {
-    position: absolute;  
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0 10px 2px;
-    background-color: white;
-    z-index: 100;
-    max-width: 100%;  
-    margin: 0 auto;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
-}
+    /* Messages de l'utilisateur */
+    .user-message {
+        align-self: flex-end;
+        justify-content: flex-end;
+    }
 
-.chat-form {
-    margin-bottom: 4px;
-}
+    .user-message .message-content {
+        background-color: #f0f0f0;
+        color: var(--content-text);
+        border-radius: 16px 16px 0 16px;
+        max-width: 70%; /* Limiter la largeur pour les messages utilisateur */
+        margin-left: auto; /* Pousser vers la droite */
+    }
 
+        /* Messages de l'assistant */
+        .assistant-message {
+            align-self: flex-start;
+            justify-content: flex-start;
+            width: 100%;
+            margin-left: 0;
+            padding-left: 0;
+            position: relative;
+        }
+
+        .assistant-message .message-content {
+            background-color: transparent;
+            color: var(--content-text);
+            border-radius: 16px 16px 16px 0;
+            max-width: 90%;
+            text-align: justify;
+            margin-left: 0;
+            box-sizing: border-box;
+        }
+
+    /* Boutons d'action (edit, copy) */
+    .edit-message,
+    .copy-message {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        display: none;
+        position: absolute;
+    }
+
+    .user-message .edit-message {
+        right: calc(100% - 5px); /* Rapprocher l'icône du message */
+        top: 12px; /* Aligner avec le haut du message */
+    }
+
+    .assistant-message .copy-message {
+        bottom: -5px; /* Rapprocher l'icône du bas du message */
+        right: 5px;
+    }
+    .message:hover .edit-message,
+    .message:hover .copy-message {
+        display: block;
+    }
+
+    .edit-message:hover,
+    .copy-message:hover {
+        background-color: var(--nav-hover);
+    }
+
+    /* Animation de "en train d'écrire" */
+    .typing-indicator {
+        align-self: flex-start;
+    }
+
+
+    .typing-animation {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
+    }
+
+    .typing-animation span {
+        width: 8px;
+        height: 8px;
+        background-color: #ccc;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out both;
+    }
+
+    .typing-animation span:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .typing-animation span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-animation span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+        0%, 100% {
+            transform: scale(0.6);
+            opacity: 0.5;
+        }
+        50% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Zone de saisie du message */
+    .chat-input-container {
+        margin-top: auto;
+        padding: 10px 0;
+        position: sticky;
+        bottom: 0;
+        background-color: var(--content-bg);
+    }
+
+    .chat-form {
+        margin-bottom: 10px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Ajuster la zone de saisie */
 .input-wrapper {
     display: flex;
-    background-color: #ffffff;
-    border-radius: 12px;
+    flex-direction: column; /* Changer la direction en colonne pour empiler les éléments */
+    align-items: flex-end; /* Aligner le bouton à droite */
+    background-color: #f5f5f5;
+    border-radius: 8px;
     padding: 10px 16px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    min-height: 120px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     border: 1px solid #e0e0e0;
-    min-height: 120px;  
-    max-height: 150px;
-    position: relative;
+    position: relative; /* Permet de positionner le bouton en absolu si nécessaire */
 }
 
 .chat-input {
     flex: 1;
     border: none;
     background: transparent;
-    padding: 5px 0;
-    font-size: 15px;
+    padding: 8px 16px;
+    font-size: 14px;
     resize: none;
-    min-height: 30px;
     max-height: 120px;
-    outline: none;
     line-height: 1.5;
-    width: 100%;
+    outline: none;
+    width: 100%; /* S'assurer que la textarea prend toute la largeur */
+    text-align: left; /* Aligner le texte à gauche */
+    vertical-align: top; /* Aligner le texte en haut */
+    box-sizing: border-box; /* Inclure le padding dans la taille */
 }
 
-.send-button {
-    background-color: #333;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    .send-button {
+        background-color: #000; /* Fond noir circulaire */
+        border: none;
+        border-radius: 50%;
+        padding: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+    }
+
+    .send-button svg {
+        color: #fff; /* Flèche blanche */
+    }
+
+    .send-button:hover svg {
+        color: #fff;
+    }
+
+    .disclaimer {
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 10px;
+    }
+
+    /* Style de l'icône de suppression */
+    .delete-conversation {
+        background: none; /* Supprimer le fond */
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px;
+        opacity: 0.7; /* Rendre l'icône plus subtile */
+        transition: opacity 0.2s;
+    }
+
+    .delete-conversation:hover {
+        opacity: 1; /* Plus visible au survol */
+        background: none; /* Assurer qu'il n'y a pas de fond même au survol */
+    }
+
+    /* Ajustements pour le responsive */
+@media (max-width: 768px) {
+    .welcome-screen {
+        padding: 10px; /* Déjà présent */
+        min-height: 70vh; /* Augmenter la hauteur minimale pour mieux centrer */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centrage vertical */
+        align-items: center;
+    }
+
+    .welcome-content {
+        gap: 6px; /* Déjà présent */
+        margin-top: auto; /* Pousse le contenu vers le centre */
+        margin-bottom: auto; /* Pousse le contenu vers le centre */
+    }
+
+    .welcome-content h1 {
+        font-size: 28px; /* Déjà présent */
+    }
+
+    .welcome-content h2 {
+        font-size: 12px; /* Déjà présent */
+    }
+
+    .welcome-content p {
+        font-size: 12px; /* Déjà présent */
+    }
+
+    .welcome-content .logo svg {
+        width: 48px; /* Déjà présent */
+        height: 48px;
+    }
 }
 
-.send-button:hover {
-    background-color: #555;
+@media (max-width: 480px) {
+    .welcome-screen {
+        padding: 5px; /* Déjà présent */
+        min-height: 75vh; /* Ajuster encore plus pour les très petits écrans */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .welcome-content {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .welcome-content h1 {
+        font-size: 24px; /* Déjà présent */
+    }
+
+    .welcome-content h2 {
+        font-size: 10px; /* Déjà présent */
+    }
+
+    .welcome-content p {
+        font-size: 10px; /* Déjà présent */
+    }
+
+    .welcome-content .logo svg {
+        width: 40px; /* Déjà présent */
+        height: 40px;
+    }
+
+    /* Ajuster la zone de saisie pour qu'elle ne gêne pas le centrage */
+    .chat-input-container {
+        padding: 5px 0; /* Réduire le padding pour équilibrer l'espace */
+    }
 }
 
-/* Avertissement en bas */
-.disclaimer {
-    text-align: center;
-    margin-top: 2px;  
-    padding-top: 2px;  
-    border-top: none;  
-    margin-bottom: 0 !important; 
-    padding-bottom: 0 !important; 
-}
+/* S'assurer que la hauteur prend en compte les barres de navigation */
+@supports (height: 100dvh) {
+    .welcome-screen {
+        min-height: 60dvh; /* Utiliser dvh pour dynamic viewport height */
+    }
 
-.disclaimer p {
-    color: #888;
-    font-size: 12px;
-    margin: 0;
-}
+    @media (max-width: 768px) {
+        .welcome-screen {
+            min-height: 70dvh; /* Ajuster pour mobile */
+        }
+    }
 
-/* Style pour mode chat actif */
-.chat-active .welcome-screen {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.chat-active .chat-messages {
-    padding-top: 10px;
+    @media (max-width: 480px) {
+        .welcome-screen {
+            min-height: 75dvh; /* Ajuster pour très petits écrans */
+        }
+    }
 }
 </style>
 
-<!-- Plutôt que d'inclure le script ici, nous utiliserons un fichier séparé -->
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const chatContainer = document.querySelector('.chat-container');
+        const conversationId = chatContainer.dataset.conversationId || '';
+
+        // Définir le mode initial (welcome ou chat)
+        function setInitialMode() {
+            if (conversationId) {
+                fetch(`/api/conversations/${conversationId}/messages`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.messages && data.messages.length > 0) {
+                            chatContainer.classList.add('chat-active');
+                            displayMessages(data.messages);
+                        } else {
+                            chatContainer.classList.remove('chat-active');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading messages:', error);
+                        chatContainer.classList.remove('chat-active');
+                    });
+            } else {
+                chatContainer.classList.remove('chat-active');
+            }
+        }
+
+        // Fonction pour afficher les messages depuis l'API
+        function displayMessages(messages) {
+            chatMessages.innerHTML = '';
+            messages.forEach(msg => {
+                if (msg.role === 'user') {
+                    addUserMessage(msg.content);
+                } else if (msg.role === 'assistant') {
+                    addAssistantMessage(msg.content);
+                }
+            });
+            scrollToBottom();
+        }
+
+        // Ajustement automatique de la hauteur du textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Fonction pour charger les conversations récentes
+        function loadRecentConversations() {
+            const recentConversationsContainer = document.getElementById('recentConversations');
+            if (!recentConversationsContainer) return;
+
+            fetch('/api/conversations', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors du chargement des conversations');
+                }
+                return response.json();
+            })
+            .then(conversations => {
+                // Vider le conteneur actuel
+                recentConversationsContainer.innerHTML = '';
+                
+                // Parcourir chaque conversation et l'ajouter à la liste
+                Object.entries(conversations).forEach(([convId, conv]) => {
+                    const convElement = document.createElement('div');
+                    convElement.className = 'nav-item conversation-item';
+                    convElement.dataset.conversationId = convId;
+                    
+                    // Vérifier si c'est la conversation active
+                    const currentConvId = document.querySelector('.chat-container')?.dataset.conversationId;
+                    const isActive = currentConvId === convId;
+                    
+                    convElement.innerHTML = `
+                        <a href="/chat/${convId}" class="nav-link conversation-link ${isActive ? 'active' : ''}">
+                            <div class="nav-content">
+                                <span class="conversation-title">${conv.title}</span>
+                            </div>
+                            <div class="conversation-actions">
+                                <button class="delete-conversation" data-conversation-id="${convId}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 6h18"></path>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </a>
+                    `;
+                    
+                    recentConversationsContainer.appendChild(convElement);
+                    
+                    // Ajouter un écouteur d'événement pour le bouton de suppression
+                    const deleteBtn = convElement.querySelector('.delete-conversation');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const conversationId = this.dataset.conversationId;
+                            window.currentConversationToDelete = conversationId;
+                            
+                            const modal = document.getElementById('deleteConfirmModal');
+                            if (modal) {
+                                modal.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        }
+
+        // New Chat button handler - Modify in base.html
+        const newChatBtn = document.getElementById('newChatBtn');
+        if (newChatBtn) {
+            newChatBtn.addEventListener('click', function() {
+                // Just redirect to the chat page without creating a new conversation
+                window.location.href = '/chat';
+            });
+        }
+
+        // Appeler la fonction au chargement de la page
+        loadRecentConversations();
+
+        // Soumission du formulaire
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                chatContainer.classList.add('chat-active');
+                addUserMessage(message);
+                
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                
+                const typingIndicator = addTypingIndicator();
+                const currentConversationId = chatContainer.dataset.conversationId || '';
+                
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: currentConversationId
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la requête');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    typingIndicator.remove();
+                    addAssistantMessage(data.response);
+                    
+                    if (data.conversation_id && (!currentConversationId || data.conversation_id !== currentConversationId)) {
+                        chatContainer.dataset.conversationId = data.conversation_id;
+                        if (!currentConversationId) {
+                            history.pushState({}, '', `/chat/${data.conversation_id}`);
+                        }
+                    }
+                    
+                    // Mettre à jour la liste des conversations récentes
+                    loadRecentConversations();
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    typingIndicator.remove();
+                    addAssistantMessage("Désolé, je n'ai pas pu traiter votre demande. Veuillez réessayer.");
+                });
+            }
+        });
+
+        // Fonction pour ajouter un message utilisateur
+        function addUserMessage(message) {
+            const template = document.getElementById('userMessageTemplate');
+            const messageElement = template.content.cloneNode(true);
+
+            messageElement.querySelector('.message-text').textContent = message;
+            chatMessages.appendChild(messageElement);
+
+            const editButton = chatMessages.lastElementChild.querySelector('.edit-message');
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    messageInput.value = message;
+                    messageInput.focus();
+                    messageInput.style.height = 'auto';
+                    messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+                    scrollToBottom();
+                });
+            }
+
+            scrollToBottom();
+        }
+
+        // Fonction pour ajouter un message assistant
+        function addAssistantMessage(message) {
+            const template = document.getElementById('assistantMessageTemplate');
+            const messageElement = template.content.cloneNode(true);
+
+            messageElement.querySelector('.message-text').textContent = message;
+            chatMessages.appendChild(messageElement);
+
+            const copyButton = chatMessages.lastElementChild.querySelector('.copy-message');
+            if (copyButton) {
+                copyButton.addEventListener('click', function() {
+                    navigator.clipboard.writeText(message)
+                        .then(() => {
+                            const originalHTML = this.innerHTML;
+                            this.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                            setTimeout(() => {
+                                this.innerHTML = originalHTML;
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Could not copy text: ', err);
+                        });
+                });
+            }
+
+            scrollToBottom();
+        }
+
+        // Fonction pour ajouter l'indicateur de saisie
+        function addTypingIndicator() {
+            const template = document.getElementById('typingIndicatorTemplate');
+            const indicator = template.content.cloneNode(true);
+
+            chatMessages.appendChild(indicator);
+            scrollToBottom();
+
+            return chatMessages.lastElementChild;
+        }
+
+        // Fonction pour scroller vers le bas
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Permettre l'envoi avec Entrée, mais Shift+Entrée pour nouvelle ligne
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Observer les changements d'URL pour réinitialiser le mode
+        function handleURLChange() {
+            if (window.location.pathname === '/chat') {
+                chatContainer.dataset.conversationId = '';
+                chatContainer.classList.remove('chat-active');
+                chatMessages.innerHTML = '';
+            }
+        }
+
+        window.addEventListener('popstate', handleURLChange);
+
+        // Initialiser le mode au chargement
+        setInitialMode();
+    });
+</script>
 {% endblock %}

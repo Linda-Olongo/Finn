@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' stroke='%23000000' fill='none' stroke-width='2'/></svg>">
+  <title>Sign Up | Finn</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      color: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageLoad 0.6s ease forwards;
+    }
+    @keyframes pageLoad {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .container {
+      width: 100%;
+      max-width: 430px;
+      margin: 2vh auto;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .step2-active .container {
+      max-width: 480px !important; /* Augmentation de la largeur pour step2 */
+      height: auto !important; /* Hauteur auto pour s'adapter au contenu */
+      min-height: 550px !important; /* Hauteur minimale */
+      padding: 1.5rem !important; /* Augmentation du padding intérieur */
+    }
+    .back-link {
+      align-self: flex-start;
+    }
+    .step1 .back-link,
+    .step2 .back-link {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .back-link a {
+      color: black;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .back-link a::before {
+      content: '←';
+      font-size: 1.2rem;
+    }
+    .separator {
+      width: 100%;
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 1rem 0 !important; /* Augmentation de la marge */
+    }
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .step1 .logo-container {
+      margin-bottom: 2rem;
+    }
+    .step2 .logo-container {
+      margin-bottom: 1rem;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+    .brand-name {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: black;
+    }
+    .step1, .step2 {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .step1 .input-group,
+    .step2 .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .step1 .input-group {
+      gap: 1rem;
+      margin-top: 4rem; /* Augmentation de la marge pour descendre davantage */
+    }
+    .step2 .input-group {
+      gap: 0.8rem; /* Augmenté pour donner plus d'espace entre les éléments */
+    }
+    .step1 .input-label,
+    .step2 .input-label {
+      align-self: flex-start;
+      font-weight: 500;
+    }
+    .step1 .input-label {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    .step2 .input-label {
+      font-size: 0.9rem;
+      margin-bottom: 0.1rem;
+    }
+    .step1 input,
+    .step2 input {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+    .step1 input {
+      padding: 1rem;
+      font-size: 1rem;
+      height: 55px;
+    }
+    .step2 input {
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      height: 45px; /* Légèrement plus haut */
+    }
+    input:focus {
+      outline: none;
+      border-color: #4285f4;
+    }
+    .password-container {
+      position: relative;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+    }
+    .step1 .btn,
+    .step2 .btn {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .step1 .btn {
+      padding: 1rem;
+      font-size: 1rem;
+      height: 55px;
+      margin-top: 1rem;
+    }
+    .step2 .btn {
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      height: 45px; /* Légèrement plus haut */
+      margin-top: 1rem; /* Plus d'espace */
+    }
+    .btn-submit-email {
+      background-color: black;
+      color: white;
+    }
+    .btn-google {
+      background-color: #f0f0f0;
+      color: black;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-google img {
+      width: 20px;
+    }
+    .bottom-text {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: auto; /* Pousse le texte tout en bas */
+      margin-bottom: 0.5rem; /* Petite marge pour éviter de coller au bord */
+      text-align: center;
+    }
+    .bottom-text a {
+      color: black;
+      text-decoration: underline;
+    }
+    .step1 .error,
+    .step2 .error {
+      color: #d00;
+    }
+    .step1 .error {
+      font-size: 0.9rem;
+      margin-top: 0.4rem;
+    }
+    .step2 .error {
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
+    
+    /* Styles responsives */
+   /* Styles responsives */
+@media (max-width: 500px) {
+  body {
+    background-color: white; /* Fond blanc sur mobile */
+  }
+  .container {
+    max-width: 100%;
+    height: auto;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1.5rem;
+    box-shadow: none; /* Enlever l'ombre sur mobile */
+    border-radius: 0; /* Pas de coins arrondis sur mobile */
+  }
+  .step2-active .container {
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    padding: 1.5rem !important;
+  }
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+  .brand-name {
+    font-size: 1.8rem;
+  }
+  
+  /* Modifications pour l'étape 1 */
+  .step1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre verticalement */
+    min-height: 70vh; /* Donne assez d'espace pour centrer */
+  }
+  .step1 .input-group {
+    margin-top: 0; /* Supprime la marge supérieure fixe */
+    gap: 1.2rem; /* Plus d'espace entre les éléments */
+  }
+  .step1 .logo-container {
+    margin-bottom: 3rem; /* Plus d'espace après le logo */
+  }
+  
+  /* Assurer que le séparateur est visible UNIQUEMENT en étape 2 */
+  .separator {
+    display: none !important; /* Cache par défaut */
+  }
+  .step2-active .separator {
+    display: block !important; /* Affiche en étape 2 */
+    margin: 1rem 0 !important;
+  }
+  
+  /* Ajustements pour les champs et boutons */
+  .step1 input {
+    padding: 0.8rem;
+    height: 50px;
+  }
+  .bottom-text {
+    margin-top: 3rem; /* Espace en bas de l'écran */
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo + Finn -->
+    <div class="logo-container">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
+      </svg>
+      <span class="brand-name">Finn</span>
+    </div>
+
+    <!-- Back Link for Step 2 (déplacé après le logo) -->
+    <div class="back-link" id="backLink" style="display: none;">
+      <a href="#" id="backToStep1">Back</a>
+    </div>
+    <div class="separator" id="separator" style="display: none;"></div>
+
+    <!-- ÉTAPE 1 : Email + Submit + Google -->
+    <div class="step1">
+      <div class="input-group">
+        <label class="input-label" for="emailInput">Email</label>
+        <input
+          type="email"
+          id="emailInput"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+        <button class="btn btn-submit-email" id="btnSubmitEmail">Submit</button>
+        <button class="btn btn-google" id="btnGoogle">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+          Sign up with Google
+        </button>
+      </div>
+
+      <div class="bottom-text">
+        Already have an account? <a href="/connexion">Sign in</a>
+        <p>By continuing, you agree to Finn's <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>.</p>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 : Formulaire complet (masqué initialement) -->
+    <div class="step2" id="step2" style="display: none;">
+      <div class="input-group">
+        <label class="input-label" for="firstName">First name</label>
+        <input type="text" id="firstName" name="firstName" required />
+
+        <label class="input-label" for="lastName">Last name</label>
+        <input type="text" id="lastName" name="lastName" required />
+
+        <label class="input-label" for="emailStep2">Email</label>
+        <input type="email" id="emailStep2" name="emailStep2" readonly />
+
+        <label class="input-label" for="password">Password</label>
+        <div class="password-container">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+          />
+          <span class="password-toggle" id="passwordToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </span>
+        </div>
+
+        <label class="input-label" for="confirmPassword">Confirm password</label>
+        <div class="password-container">
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+          <span class="password-toggle" id="confirmPasswordToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </span>
+        </div>
+
+        <div class="error" id="errorMsg"></div>
+        <button class="btn btn-submit-email" id="btnSignupFinal">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const btnSubmitEmail = document.getElementById("btnSubmitEmail");
+      const step1 = document.querySelector(".step1");
+      const step2 = document.getElementById("step2");
+      const emailInput = document.getElementById("emailInput");
+      const emailStep2 = document.getElementById("emailStep2");
+      const btnSignupFinal = document.getElementById("btnSignupFinal");
+      const errorMsg = document.getElementById("errorMsg");
+      const btnGoogle = document.getElementById("btnGoogle");
+      const backLink = document.getElementById("backLink");
+      const separator = document.getElementById("separator");
+      const backToStep1 = document.getElementById("backToStep1");
+      const container = document.querySelector(".container");
+
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+      const passwordToggle = document.getElementById("passwordToggle");
+      const confirmPasswordToggle = document.getElementById("confirmPasswordToggle");
+
+      function togglePasswordVisibility(input, toggleElement) {
+        if (input.type === "password") {
+          input.type = "text";
+          toggleElement.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          `;
+        } else {
+          input.type = "password";
+          toggleElement.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          `;
+        }
+      }
+
+      passwordToggle.addEventListener("click", () => {
+        togglePasswordVisibility(passwordInput, passwordToggle);
+      });
+
+      confirmPasswordToggle.addEventListener("click", () => {
+        togglePasswordVisibility(confirmPasswordInput, confirmPasswordToggle);
+      });
+
+      btnSubmitEmail.addEventListener("click", () => {
+        const emailValue = emailInput.value.trim();
+        if (!validateEmail(emailValue)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+        step1.style.display = "none";
+        step2.style.display = "flex";
+        backLink.style.display = "block";
+        separator.style.display = "block";
+        emailStep2.value = emailValue;
+        document.body.classList.add("step2-active");
+        container.classList.add("step2-active");
+        
+        // Force le refresh du style et l'affichage du séparateur
+        separator.style.display = "block";
+        separator.style.visibility = "visible";
+        separator.style.opacity = "1";
+      });
+
+      backToStep1.addEventListener("click", () => {
+        step1.style.display = "flex";
+        step2.style.display = "none";
+        backLink.style.display = "none";
+        separator.style.display = "none";
+        document.body.classList.remove("step2-active");
+        container.classList.remove("step2-active");
+      });
+
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+      btnSignupFinal.addEventListener("click", async () => {
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const email = emailStep2.value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+          errorMsg.textContent = "All fields are required.";
+          return;
+        }
+        if (password !== confirmPassword) {
+          errorMsg.textContent = "Passwords do not match.";
+          return;
+        }
+
+        try {
+          const response = await fetch("/inscription", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email,
+              password,
+            }),
+          });
+          if (response.ok) {
+            window.location.href = "/";
+          } else {
+            const data = await response.json();
+            errorMsg.textContent = data.message || "Error during sign up.";
+          }
+        } catch (err) {
+          errorMsg.textContent = "Server error. Please try again.";
+        }
+      });
+
+      btnGoogle.addEventListener("click", () => {
+        window.location.href = "/google_signup";
+      });
+    });
+  </script>
+</body>
+</html>

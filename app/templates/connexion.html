@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' stroke='%23000000' fill='none' stroke-width='2'/></svg>">
+  <title>Sign In | Finn</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    body {
+      /* Style de base pour le corps de la page */
+      font-family: Arial, sans-serif;
+      background-color: white;
+      color: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageLoad 0.6s ease forwards;
+    }
+    @keyframes pageLoad {
+      /* Animation de chargement de la page */
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .container {
+      /* Conteneur principal de la page de connexion */
+      width: 100%;
+      max-width: 480px; /* Aligné avec l'étape 2 de l'inscription */
+      margin: 2vh auto;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: auto;
+      min-height: 550px; /* Aligné avec l'étape 2 */
+    }
+    .logo-container {
+      /* Conteneur pour le logo et le nom de la marque */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem; /* Espacement réduit pour correspondre à l'étape 2 */
+    }
+    .logo {
+      /* Style du logo SVG */
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+    .brand-name {
+      /* Nom de la marque */
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: black;
+    }
+    .login-form {
+      /* Formulaire de connexion */
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .input-group {
+      /* Groupe d'inputs (email et mot de passe) */
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem; /* Espacement réduit pour correspondre à l'étape 2 */
+      margin-top: 1rem;
+    }
+    .input-label {
+      /* Étiquettes des champs */
+      align-self: flex-start;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 0.1rem; /* Espacement réduit pour correspondre à l'étape 2 */
+    }
+    input {
+      /* Style des champs de saisie */
+      width: 100%;
+      padding: 0.8rem; /* Aligné avec l'étape 2 */
+      font-size: 0.9rem; /* Aligné avec l'étape 2 */
+      height: 45px; /* Aligné avec l'étape 2 */
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      /* Style au focus des champs */
+      outline: none;
+      border-color: #4285f4;
+    }
+    .password-container {
+      /* Conteneur pour le champ de mot de passe avec toggle */
+      position: relative;
+    }
+    .password-toggle {
+      /* Bouton pour afficher/masquer le mot de passe */
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+    }
+    .forgot-password {
+      /* Lien "Mot de passe oublié ?" */
+      align-self: flex-end;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+      text-decoration: none;
+    }
+    .forgot-password:hover {
+      /* Effet au survol du lien */
+      text-decoration: underline;
+      color: #000;
+    }
+    .btn {
+      /* Style des boutons */
+      width: 100%;
+      padding: 0.8rem; /* Aligné avec l'étape 2 */
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem; /* Aligné avec l'étape 2 */
+      height: 45px; /* Aligné avec l'étape 2 */
+      margin-top: 1rem; /* Aligné avec l'étape 2 */
+    }
+    .btn-login {
+      /* Bouton de connexion */
+      background-color: black;
+      color: white;
+    }
+    .separator {
+      /* Séparateur "or" entre les boutons */
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #666;
+    }
+    .separator::before,
+    .separator::after {
+      /* Lignes avant et après le texte "or" */
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: #e0e0e0;
+    }
+    .separator span {
+      /* Texte "or" */
+      padding: 0 1rem;
+      font-size: 0.9rem;
+    }
+    .btn-google {
+      /* Bouton de connexion avec Google */
+      background-color: #f0f0f0;
+      color: black;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 3rem;
+    }
+    .btn-google img {
+      /* Logo Google dans le bouton */
+      width: 20px;
+    }
+    .bottom-text {
+      /* Texte en bas de page (liens et mentions légales) */
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: auto; /* Pousse le texte en bas */
+      margin-bottom: 0.5rem; /* Aligné avec l'étape 2 */
+      text-align: center;
+    }
+    .bottom-text a {
+      /* Liens dans le texte en bas */
+      color: black;
+      text-decoration: underline;
+    }
+    .error {
+      /* Message d'erreur */
+      color: #d00;
+      font-size: 0.9rem;
+      margin-top: 0.3rem; /* Aligné avec l'étape 2 */
+      text-align: left;
+    }
+    /* Styles responsives pour écrans < 500px */
+    @media (max-width: 500px) {
+      body {
+        /* Fond blanc sur mobile */
+        background-color: white;
+      }
+      .container {
+        /* Conteneur pleine largeur et centré verticalement */
+        max-width: 100%;
+        height: 100dvh; /* Utilise dynamic viewport height pour gérer les barres dynamiques */
+        margin: 0;
+        padding: 1rem; /* Réduit pour plus de compacité */
+        box-shadow: none; /* Pas d'ombre sur mobile */
+        border-radius: 0; /* Pas de coins arrondis sur mobile */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centre tout le contenu verticalement */
+        gap: 0.5rem; /* Ajoute un espacement uniforme entre les éléments */
+        overflow: hidden; /* Évite tout défilement */
+      }
+      .logo {
+        /* Réduction de la taille du logo sur mobile */
+        width: 50px;
+        height: 50px;
+      }
+      .brand-name {
+        /* Réduction de la taille du nom de la marque */
+        font-size: 1.8rem;
+      }
+      .logo-container {
+        /* Espacement autour du logo sur mobile */
+        margin-bottom: 0.5rem; /* Réduit pour moins d'espace sous le logo */
+        margin-top: 0.5rem; /* Garde un petit espace en haut */
+      }
+      .login-form {
+        /* Formulaire de connexion ajusté pour prendre la hauteur nécessaire */
+        display: flex;
+        flex-direction: column;
+        height: fit-content; /* Prend uniquement la hauteur nécessaire */
+        flex-grow: 0; /* Ne s'étend pas inutilement */
+      }
+      .input-group {
+        /* Espacement entre les champs sur mobile */
+        gap: 0.8rem; /* Réduit pour plus de compacité */
+        margin-top: 0.5rem; /* Réduit pour moins d'espace entre logo et email */
+      }
+      .input-label {
+        /* Étiquettes des champs ajustées */
+        margin-bottom: 0; /* Supprime l'espace en dessous pour compacité */
+      }
+      input {
+        /* Ajustement des champs sur mobile */
+        padding: 0.8rem;
+        height: 45px; /* Légèrement réduit pour compacité */
+      }
+      .forgot-password {
+        /* Ajustement du lien "Mot de passe oublié ?" */
+        margin-top: 0.2rem; /* Réduit l'espace au-dessus */
+        margin-bottom: 0.2rem; /* Réduit l'espace en dessous */
+      }
+      .btn {
+        /* Ajustement des boutons sur mobile */
+        padding: 0.8rem;
+        height: 45px; /* Aligné avec inputs */
+        margin-top: 0.5rem; /* Réduit l'espace au-dessus */
+      }
+      .separator {
+        /* Réduire l'espacement autour du séparateur */
+        margin: 0.3rem 0; /* Réduit pour moins d'espace */
+      }
+      .btn-google {
+        /* Ajustement du bouton Google pour réduire l'espace */
+        margin-bottom: 0.5rem; /* Réduit pour moins d'espace */
+      }
+      .bottom-text {
+        /* Espacement du texte en bas sur mobile */
+        margin-top: 1rem; /* Réduit pour un design plus compact */
+        margin-bottom: 0.5rem; /* Garde un petit espace en bas */
+        padding-bottom: 0; /* Supprime le padding en bas */
+      }
+      /* Ajustement pour écrans de petite hauteur */
+      @media (max-height: 600px) {
+        .input-group {
+          /* Réduit encore plus l'espace pour écrans plus petits */
+          margin-top: 0.3rem; /* Réduit pour écrans de petite hauteur */
+          gap: 0.6rem; /* Réduit l'espace entre les champs */
+        }
+        .logo-container {
+          /* Réduit l'espace sous le logo pour écrans plus petits */
+          margin-bottom: 0.3rem;
+        }
+        .separator {
+          /* Réduit encore plus l'espace autour du séparateur */
+          margin: 0.2rem 0;
+        }
+        .btn {
+          /* Réduit l'espace au-dessus des boutons */
+          margin-top: 0.3rem;
+        }
+        .btn-google {
+          /* Réduit l'espace en dessous du bouton Google */
+          margin-bottom: 0.3rem;
+        }
+        .bottom-text {
+          /* Réduit l'espace au-dessus du texte en bas */
+          margin-top: 0.8rem;
+          margin-bottom: 0.3rem;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo + Finn -->
+    <div class="logo-container">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
+      </svg>
+      <span class="brand-name">Finn</span>
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-form">
+      <div class="input-group">
+        <label class="input-label" for="emailInput">Email</label>
+        <input
+          type="email"
+          id="emailInput"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+
+        <label class="input-label" for="passwordInput">Password</label>
+        <div class="password-container">
+          <input
+            type="password"
+            id="passwordInput"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+          <span class="password-toggle" id="passwordToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </span>
+        </div>
+        <a href="/reset-password" class="forgot-password">Forgot your password?</a>
+        <div class="error" id="errorMsg"></div>
+        <button class="btn btn-login" id="btnLogin">Sign in</button>
+      </div>
+
+      <div class="separator">
+        <span>or</span>
+      </div>
+
+      <button class="btn btn-google" id="btnGoogleLogin">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+        Sign in with Google
+      </button>
+
+      <div class="bottom-text">
+        Don't have an account? <a href="/inscription">Sign up</a>
+        <p>By continuing, you agree to Finn's <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const btnLogin = document.getElementById("btnLogin");
+      const emailInput = document.getElementById("emailInput");
+      const passwordInput = document.getElementById("passwordInput");
+      const errorMsg = document.getElementById("errorMsg");
+      const btnGoogleLogin = document.getElementById("btnGoogleLogin");
+      const passwordToggle = document.getElementById("passwordToggle");
+
+      // Toggle password visibility
+      function togglePasswordVisibility() {
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passwordToggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          `;
+        } else {
+          passwordInput.type = "password";
+          passwordToggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          `;
+        }
+      }
+
+      passwordToggle.addEventListener("click", togglePasswordVisibility);
+
+      // Validate email format
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+      // Handle login form submission
+      btnLogin.addEventListener("click", async function() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Validate fields
+        if (!email || !password) {
+          errorMsg.textContent = "All fields are required.";
+          return;
+        }
+
+        if (!validateEmail(email)) {
+          errorMsg.textContent = "Please enter a valid email address.";
+          return;
+        }
+
+        try {
+          // Send login data to the server
+          const response = await fetch("/connexion", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Store token in localStorage for the session
+            if (data.token) {
+              localStorage.setItem("finnToken", data.token);
+            }
+            
+            // Redirect to the chat page
+            window.location.href = "/chat";
+          } else {
+            // Display error message
+            errorMsg.textContent = data.message || "Login error. Please check your credentials.";
+          }
+        } catch (err) {
+          console.error("Login error:", err);
+          errorMsg.textContent = "Server error. Please try again later.";
+        }
+      });
+
+      // Handle Google login
+      btnGoogleLogin.addEventListener("click", function() {
+        window.location.href = "/google_signup";
+      });
+    });
+  </script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91b4e1ccf8d3bfb8',t:'MTc0MTEyODA5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

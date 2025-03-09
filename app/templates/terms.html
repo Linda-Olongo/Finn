@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' stroke='%23000000' fill='none' stroke-width='2'/></svg>">
+    <title>Terms of Service | Finn</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
+            width: 90%;
+            max-width: 800px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            border-color: #fff;
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #999;
+            transition: stroke 0.3s ease;
+        }
+
+        .back-button:hover svg {
+            stroke: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: left; /* Align left */
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-align: left; /* Align left */
+        }
+
+        p, ul {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            text-align: justify; /* Justify text */
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animation de fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container, .back-button {
+            animation: fadeIn 1s forwards;
+            opacity: 0;
+        }
+
+        .back-button { animation-delay: 0.2s; }
+        .container { animation-delay: 0.4s; }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p, ul {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .back-button {
+                width: 36px;
+                height: 36px;
+            }
+
+            .back-button svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            p, ul {
+                font-size: 0.85rem;
+            }
+
+            .back-button {
+                width: 32px;
+                height: 32px;
+            }
+
+            .back-button svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('main.logout') }}" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        <h1>Terms of Service - Consumer</h1>
+        <p><strong>Last Updated: March 05, 2025</strong></p>
+
+        <h2>Welcome to Finn</h2>
+        <p>Welcome to Finn, a platform designed to empower you with financial tools and insights. By accessing or using Finn (hereinafter referred to as the "Service"), you agree to be bound by these Terms of Service ("Terms"). These Terms govern your use of Finn, including its website, applications, and related services, whether accessed via desktop, mobile, or other devices. If you do not agree with these Terms, you must not use the Service.</p>
+        <p>Finn provides a suite of financial tools, including price predictions for stocks and cryptocurrencies, access to economic news, educational resources on trading and financial concepts, data visualization through charts, trading simulations, and personalized price alerts. These Terms apply to all users of the Service ("Users," "you," or "your"), and by using the Service, you acknowledge that you have read, understood, and agreed to these Terms, as well as our <a href="/privacy" target="_blank">Privacy Policy</a>.</p>
+
+        <h2>Who We Are</h2>
+        <p>Finn is operated by Finn Technologies LLC, a company incorporated in [Insert Jurisdiction, e.g., Delaware, USA] ("Finn," "we," "us," or "our"). We are committed to providing innovative financial tools to help Users make informed decisions in the financial markets. Our mission is to democratize access to financial education and insights through cutting-edge technology, including artificial intelligence and data analytics.</p>
+        <p>For any inquiries, you may contact us at:</p>
+        <ul>
+            <li><strong>Email:</strong> <a href="mailto:finnPrime@gmail.com">finnPrime@gmail.com</a></li>
+            <li><strong>Address:</strong> [To be completed based on your details, if applicable]</li>
+        </ul>
+
+        <h2>Registration and Access</h2>
+        <p>To access certain features of the Service, such as trading simulations, personalized alerts, or saving your preferences, you must register for an account. You may register using an email address and password or via third-party authentication services (e.g., Google OAuth). By registering, you agree to:</p>
+        <ul>
+            <li>Provide accurate, current, and complete information during registration.</li>
+            <li>Maintain the security of your account by keeping your password confidential and not sharing your login credentials with others.</li>
+            <li>Notify us immediately of any unauthorized use of your account or any other security breach at <a href="mailto:finnPrime@gmail.com">finnPrime@gmail.com</a>.</li>
+            <li>Be solely responsible for all activities that occur under your account.</li>
+        </ul>
+        <p>You must be at least 18 years of age to register for and use the Service. By registering, you represent and warrant that you meet this age requirement and have the legal capacity to enter into these Terms.</p>
+        <p>Finn reserves the right to refuse access to the Service, suspend, or terminate your account at our discretion, particularly if we suspect fraudulent activity, violation of these Terms, or misuse of the Service.</p>
+
+        <h2>Using Our Service</h2>
+        <p>You may use the Service for personal, non-commercial purposes in accordance with these Terms. The Service includes the following features:</p>
+        <ul>
+            <li><strong>Price Predictions:</strong> Access predictions for stock and cryptocurrency prices based on historical data and algorithmic analysis.</li>
+            <li><strong>Economic News:</strong> Stay updated with real-time economic news and analysis of market impacts.</li>
+            <li><strong>Financial Education:</strong> Learn trading basics, technical terms, and financial concepts through educational resources.</li>
+            <li><strong>Visualization:</strong> View interactive charts and compare assets using key indicators.</li>
+            <li><strong>Trading Simulations:</strong> Practice trading strategies using a virtual portfolio and track your performance.</li>
+            <li><strong>Personalized Alerts:</strong> Set up and manage price alerts to receive notifications about market opportunities.</li>
+        </ul>
+        <h3>User Conduct</h3>
+        <p>When using the Service, you agree to:</p>
+        <ul>
+            <li>Comply with all applicable laws, regulations, and these Terms.</li>
+            <li>Use the Service for lawful purposes only and not engage in any activity that may harm Finn, its Users, or third parties.</li>
+            <li>Not use the Service to engage in speculative or high-risk trading activities that violate financial regulations in your jurisdiction.</li>
+            <li>Not attempt to gain unauthorized access to Finn’s systems, networks, or other Users’ accounts.</li>
+            <li>Not use automated systems, bots, or scripts to access, scrape, or manipulate the Service without prior written consent from Finn.</li>
+            <li>Not upload, share, or transmit any content that is unlawful, harmful, defamatory, obscene, or otherwise objectionable.</li>
+        </ul>
+        <p>Finn is not a financial advisor, broker, or investment firm. The price predictions, news, and educational content provided through the Service are for informational purposes only and should not be construed as financial advice. You are solely responsible for any decisions or actions you take based on the information provided by the Service.</p>
+
+        <h2>Content</h2>
+        <h3>User Content</h3>
+        <p>You may have the opportunity to submit content through the Service, such as messages in the chat interface, uploaded files (e.g., charts or documents), or feedback ("User Content"). By submitting User Content, you:</p>
+        <ul>
+            <li>Grant Finn a non-exclusive, worldwide, royalty-free, transferable, and sublicensable license to use, reproduce, modify, distribute, and display your User Content in connection with the Service.</li>
+            <li>Represent and warrant that you own or have the necessary rights to submit the User Content and that it does not infringe on the rights of any third party.</li>
+            <li>Acknowledge that Finn may, but is not obligated to, review, monitor, or remove User Content at its discretion.</li>
+        </ul>
+        <h3>Finn Content</h3>
+        <p>All content provided by Finn, including but not limited to price predictions, economic news, educational materials, charts, and simulated trading data ("Finn Content"), is owned by Finn or its licensors and is protected by intellectual property laws. You may access and use Finn Content solely for your personal, non-commercial use in connection with the Service. You may not reproduce, distribute, modify, or create derivative works of Finn Content without prior written permission from Finn.</p>
+
+        <h2>Beta Technologies</h2>
+        <p>Certain features of the Service, such as price prediction algorithms or trading simulations, may be offered as part of a beta program ("Beta Features"). Beta Features are provided on an "as-is" basis and may be subject to additional terms. Finn does not guarantee the accuracy, reliability, or availability of Beta Features and may modify or discontinue them at any time without notice. By using Beta Features, you acknowledge that they may contain errors, bugs, or incomplete functionalities, and you assume all risks associated with their use.</p>
+
+        <h2>Finn Intellectual Property Rights</h2>
+        <p>The Service, including its design, code, algorithms, trademarks, logos, and other proprietary materials, is owned by Finn and protected by copyright, trademark, and other intellectual property laws. Except as expressly permitted in these Terms, you may not copy, modify, distribute, sell, or create derivative works based on the Service or any part thereof. All rights not expressly granted to you in these Terms are reserved by Finn and its licensors.</p>
+
+        <h2>Privacy and Data Security</h2>
+        <p>Your privacy and data security are important to us. Our collection, use, and protection of your personal information are governed by our <a href="/privacy" target="_blank">Privacy Policy</a>, which is incorporated into these Terms by reference. By using the Service, you consent to the collection and use of your information as described in the Privacy Policy.</p>
+        <p>Finn implements reasonable technical and organizational measures to protect your data, but no system is entirely secure. You are responsible for maintaining the security of your account and any devices you use to access the Service.</p>
+
+        <h2>Termination, Suspension, Discontinuation</h2>
+        <p>Finn may, at its sole discretion, terminate, suspend, or restrict your access to the Service, or discontinue any part of the Service, with or without notice, for any reason, including but not limited to:</p>
+        <ul>
+            <li>Violation of these Terms or applicable laws.</li>
+            <li>Suspicion of fraudulent, abusive, or illegal activity.</li>
+            <li>Technical or security issues that require suspension of the Service.</li>
+            <li>Inactivity of your account for an extended period.</li>
+        </ul>
+        <p>Upon termination, your right to access and use the Service will cease immediately. Finn will not be liable for any loss of data or other consequences resulting from termination, suspension, or discontinuation of the Service. Provisions of these Terms that, by their nature, should survive termination (e.g., intellectual property rights, disclaimer of warranties, limitation of liability) will remain in effect after termination.</p>
+
+        <h2>Disclaimer of Warranties</h2>
+        <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, OR NON-INFRINGEMENT. FINN DOES NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
+        <p>FINN DOES NOT GUARANTEE THE ACCURACY, RELIABILITY, OR COMPLETENESS OF ANY INFORMATION PROVIDED THROUGH THE SERVICE, INCLUDING PRICE PREDICTIONS, ECONOMIC NEWS, OR SIMULATED TRADING RESULTS. YOU USE THE SERVICE AT YOUR OWN RISK, AND FINN WILL NOT BE LIABLE FOR ANY LOSSES OR DAMAGES RESULTING FROM YOUR RELIANCE ON THE SERVICE.</p>
+
+        <h2>Indemnity</h2>
+        <p>You agree to indemnify, defend, and hold harmless Finn, its affiliates, officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, or expenses (including reasonable attorneys’ fees) arising out of or related to:</p>
+        <ul>
+            <li>Your use of the Service.</li>
+            <li>Your violation of these Terms or any applicable laws.</li>
+            <li>Your User Content, including any claims of infringement of third-party rights.</li>
+            <li>Your negligence or willful misconduct.</li>
+        </ul>
+        <p>Finn reserves the right to assume the exclusive defense and control of any matter subject to indemnification by you, in which case you will cooperate fully with Finn in asserting any available defenses.</p>
+
+        <h2>Limitation of Liability</h2>
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, FINN AND ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO:</p>
+        <ul>
+            <li>YOUR USE OF OR INABILITY TO USE THE SERVICE.</li>
+            <li>ANY CONTENT AVAILABLE THROUGH THE SERVICE, INCLUDING FINN CONTENT OR USER CONTENT.</li>
+            <li>ANY UNAUTHORIZED ACCESS TO OR USE OF YOUR DATA.</li>
+            <li>ANY ERRORS, INACCURACIES, OR OMISSIONS IN THE SERVICE.</li>
+        </ul>
+        <p>IN NO EVENT WILL FINN’S TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING UNDER OR RELATING TO THESE TERMS OR THE SERVICE EXCEED THE AMOUNT YOU HAVE PAID TO FINN, IF ANY, IN THE PRECEDING TWELVE (12) MONTHS. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF CERTAIN LIABILITIES, SO THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.</p>
+
+        <h2>Copyright Complaints</h2>
+        <p>Finn respects the intellectual property rights of others and expects its Users to do the same. If you believe that your copyrighted work has been used on the Service in a way that constitutes copyright infringement, please provide the following information to our designated copyright agent:</p>
+        <ul>
+            <li>A physical or electronic signature of the copyright owner or a person authorized to act on their behalf.</li>
+            <li>Identification of the copyrighted work claimed to have been infringed.</li>
+            <li>Identification of the material that is claimed to be infringing, including information sufficient to locate the material on the Service.</li>
+            <li>Your contact information, including your name, address, telephone number, and email address.</li>
+            <li>A statement that you have a good faith belief that the use of the material is not authorized by the copyright owner, its agent, or the law.</li>
+            <li>A statement, made under penalty of perjury, that the information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner’s behalf.</li>
+        </ul>
+        <p>Please send copyright infringement notices to:</p>
+        <ul>
+            <li><strong>Email:</strong> <a href="mailto:finnPrime@gmail.com">finnPrime@gmail.com</a></li>
+        </ul>
+        <p>Finn reserves the right to terminate the accounts of Users who are repeat infringers.</p>
+
+        <h2>Dispute Resolution</h2>
+        <h3>Governing Law</h3>
+        <p>These Terms and any disputes arising out of or relating to the Service will be governed by and construed in accordance with the laws of [Insert Jurisdiction, e.g., the State of Delaware, USA], without regard to its conflict of law principles.</p>
+        <h3>Arbitration</h3>
+        <p>Any dispute, controversy, or claim arising out of or relating to these Terms or the Service, including the validity, interpretation, or breach thereof, shall be resolved by binding arbitration administered by [Insert Arbitration Body, e.g., the American Arbitration Association (AAA)] in accordance with its Consumer Arbitration Rules. The arbitration will be conducted in [Insert Location, e.g., Delaware, USA], unless otherwise agreed by the parties. The arbitration will be conducted by a single arbitrator, and the language of the arbitration will be English. The arbitrator’s decision will be final and binding, and judgment on the award may be entered in any court having jurisdiction.</p>
+        <h3>Class Action Waiver</h3>
+        <p>You agree that any disputes will be resolved on an individual basis, and you waive any right to participate in a class action, collective action, or representative action against Finn. Any claim you may have must be brought individually, and not consolidated with the claims of others.</p>
+        <h3>Exceptions to Arbitration</h3>
+        <p>Notwithstanding the above, either party may seek injunctive or other equitable relief in a court of competent jurisdiction to protect its intellectual property rights or to address any urgent matter requiring immediate relief.</p>
+
+        <h2>General Provisions</h2>
+        <h3>Entire Agreement</h3>
+        <p>These Terms, together with the <a href="/privacy" target="_blank">Privacy Policy</a> and any other agreements expressly incorporated by reference, constitute the entire agreement between you and Finn regarding the Service. These Terms supersede all prior or contemporaneous agreements, understandings, or representations, whether written or oral.</p>
+        <h3>Severability</h3>
+        <p>If any provision of these Terms is found to be invalid, illegal, or unenforceable, the remaining provisions will continue in full force and effect. The invalid provision will be replaced with a valid one that most closely reflects the original intent of the parties.</p>
+        <h3>Waiver</h3>
+        <p>No waiver of any provision of these Terms will be effective unless in writing and signed by Finn. The failure of Finn to enforce any right or provision of these Terms will not constitute a waiver of such right or provision.</p>
+        <h3>Assignment</h3>
+        <p>You may not assign or transfer your rights or obligations under these Terms without Finn’s prior written consent. Finn may assign or transfer its rights and obligations under these Terms at its discretion, including in connection with a merger, acquisition, or sale of assets.</p>
+        <h3>Notices</h3>
+        <p>Any notices or communications under these Terms will be sent to you via email to the address associated with your account or through the Service. Notices to Finn should be sent to <a href="mailto:finnPrime@gmail.com">finnPrime@gmail.com</a>.</p>
+        <h3>Force Majeure</h3>
+        <p>Finn will not be liable for any failure or delay in performing its obligations under these Terms due to causes beyond its reasonable control, including but not limited to acts of God, natural disasters, war, terrorism, government actions, or internet failures.</p>
+
+        <h2>Export Controls</h2>
+        <p>The Service may be subject to export control laws and regulations, including those of the United States. You agree to comply with all applicable export control laws and not to use, export, or transfer the Service or any part thereof in violation of such laws. You represent that you are not located in a country subject to a U.S. government embargo or designated as a "terrorist-supporting" country, and you are not listed on any U.S. government list of prohibited or restricted parties.</p>
+    </div>
+</body>
+</html>

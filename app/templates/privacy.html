@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' stroke='%23000000' fill='none' stroke-width='2'/></svg>">
+    <title>Privacy Policy | Finn</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
+            width: 90%;
+            max-width: 800px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            border-color: #fff;
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #999;
+            transition: stroke 0.3s ease;
+        }
+
+        .back-button:hover svg {
+            stroke: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: left; /* Align left */
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-align: left; /* Align left */
+        }
+
+        p, ul {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            text-align: justify; /* Justify text */
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animation de fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container, .back-button {
+            animation: fadeIn 1s forwards;
+            opacity: 0;
+        }
+
+        .back-button { animation-delay: 0.2s; }
+        .container { animation-delay: 0.4s; }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p, ul {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .back-button {
+                width: 36px;
+                height: 36px;
+            }
+
+            .back-button svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            p, ul {
+                font-size: 0.85rem;
+            }
+
+            .back-button {
+                width: 32px;
+                height: 32px;
+            }
+
+            .back-button svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('main.logout') }}" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        <h1>FINN PRIVACY POLICY</h1>
+        <p><strong>Last Updated: March 05, 2025</strong></p>
+
+        <p>At Finn, our ambition is to transform the way you engage with the financial world by providing an innovative and intuitive platform tailored to your needs for asset management and analysis. Our services encompass a wide range of advanced features: precise predictions of stock and cryptocurrency prices, real-time access to influential economic news, educational tools to deepen your understanding of markets, detailed graphical visualizations, immersive trading simulations, and personalized alerts to seize opportunities at the right moment. We cater to both novices looking to learn the basics of trading and seasoned investors seeking to refine their strategies with reliable, actionable data.</p>
+
+        <p>In this digital environment where trust is paramount, we place the protection of your personal information at the core of our priorities. We recognize that the confidentiality and security of your data are foundational to building a lasting relationship with you. This Privacy Policy has been carefully crafted to provide full transparency regarding how we collect, use, store, and safeguard the information you entrust to us or that we generate through your use of our services. It aims to clearly inform you of our practices, the rights you hold, and the commitments we undertake to ensure your data is handled with the highest level of care and respect. Whether you are setting up price fluctuation alerts, exploring our educational resources, or testing your skills in our simulation mode, rest assured that we work tirelessly to preserve the confidentiality of your information and maintain a secure environment.</p>
+
+        <p>This policy applies solely to Finn users and does not cover the data processing practices of third parties you may access through external links or integrations available on our platform. We invite you to read the following sections carefully to understand how we operate and how you can exercise control over your personal data.</p>
+
+        <h2>1. About Finn</h2>
+        <p>Finn is an innovative platform designed to democratize access to financial tools and support users in making informed decisions. Our services include predicting price trends for stocks and cryptocurrencies, analyzing economic news and its market impacts, offering financial education modules for all levels, providing data visualization through interactive charts, enabling a simulation mode to manage a virtual portfolio, and allowing the setup of personalized alerts to track investment opportunities. Our mission is to deliver a seamless and enriching user experience while upholding a responsible and ethical approach to managing personal information.</p>
+        <p>We are committed to adhering to the highest standards of data protection, understanding that our users’ trust depends on our ability to secure their information and offer meaningful control over its use. This Privacy Policy outlines the principles governing our practices, from data collection to retention and potential disclosure in strictly defined circumstances.</p>
+
+        <h2>2. Personal Information We Collect</h2>
+        <p>We collect various categories of personal information to ensure the proper functioning and continuous improvement of our services:</p>
+        <ul>
+            <li><strong>Information You Provide Directly:</strong>
+                <ul>
+                    <li>When creating an account or using our features: name, email address, login credentials, personalized alert preferences, and history of simulations or virtual transactions.</li>
+                    <li>User Content: messages exchanged with our assistant, uploaded files (charts, documents), questions asked within the financial education framework, or any other voluntary contributions.</li>
+                    <li>Communications: information shared via email, social media, or other contact channels.</li>
+                    <li>Other Data: responses to surveys, participation in educational events, or information required to verify your identity.</li>
+                </ul>
+            </li>
+            <li><strong>Information Collected Automatically:</strong>
+                <ul>
+                    <li>Connection Data: IP address, browser type and version, timestamps of access, and interactions with the platform.</li>
+                    <li>Usage Data: actions performed (viewing charts, launching simulations, setting alerts), content viewed, time zone, country, and session duration.</li>
+                    <li>Device Information: device type, operating system, unique identifiers.</li>
+                    <li>Location Data: approximate geographic area inferred from your IP address, used to enhance security and personalize your experience.</li>
+                    <li>Cookies and Similar Technologies: tools to maintain your session, analyze engagement, and improve service performance.</li>
+                </ul>
+            </li>
+            <li><strong>Information from External Sources:</strong> data obtained from trusted partners to prevent fraud, enhance security, or enrich our predictive and statistical analyses.</li>
+        </ul>
+
+        <h2>3. How We Use Your Personal Information</h2>
+        <p>We use your personal information for the following purposes:</p>
+        <ul>
+            <li><strong>To Provide and Enhance Our Services:</strong> delivering accurate price predictions, generating interactive charts, managing virtual portfolios, sharing relevant economic news, and sending personalized alerts.</li>
+            <li><strong>To Improve User Experience:</strong> analyzing your interactions with the platform to tailor features, customize educational content, and anticipate your needs.</li>
+            <li><strong>To Ensure Security:</strong> detecting and preventing fraud, abuse, or unauthorized access, thereby protecting your data and our platform.</li>
+            <li><strong>To Comply with Legal Obligations:</strong> adhering to applicable laws and regulations in relevant jurisdictions.</li>
+            <li><strong>To Communicate with You:</strong> sending updates about our services, notifications tied to your alerts, or information to enhance your market understanding.</li>
+        </ul>
+        <p>Additionally, we may anonymize your personal information to conduct statistical studies, refine our prediction algorithms, or develop new features, without enabling individual identification.</p>
+
+        <h2>4. How We May Disclose Personal Information</h2>
+        <p>We are committed to not selling your personal information. Disclosure is strictly limited to the following cases:</p>
+        <ul>
+            <li><strong>Service Providers:</strong> technical (hosting, payment processing, data analytics) or operational partners, bound by rigorous confidentiality obligations.</li>
+            <li><strong>Competent Authorities:</strong> when required by law or to protect our users and services from illegal or fraudulent activities.</li>
+            <li><strong>Business Transactions:</strong> in the event of a merger, acquisition, or asset sale, your data may be transferred to a third party, subject to appropriate safeguards.</li>
+            <li><strong>With Your Explicit Consent:</strong> if you choose to share your information with integrated third-party services or Finn partners.</li>
+        </ul>
+        <p>We ensure that any disclosure is accompanied by adequate protective measures and complies with legal requirements.</p>
+
+        <h2>5. Retention of Personal Information</h2>
+        <p>We retain your personal information only as long as necessary to:</p>
+        <ul>
+            <li>Provide the requested services, such as managing your alerts or simulations.</li>
+            <li>Comply with legal, tax, or regulatory obligations.</li>
+            <li>Resolve disputes or manage potential claims.</li>
+        </ul>
+        <p>Retention periods vary based on the original purpose of collection, applicable legal requirements, and risks associated with prolonged storage. For instance, account-related data is retained as long as your account remains active, while anonymized data may be kept indefinitely for analytical purposes. You may request the deletion of your data at any time (see Section 10).</p>
+
+        <h2>6. Marketing</h2>
+        <p>We may use your personal information to inform you about service updates, investment opportunities, or educational content that may interest you. These communications may include market trend notifications, invitations to educational events, or personalized suggestions based on your preferences.</p>
+        <p>You can opt out of these marketing communications at any time by adjusting your preferences in your account settings or contacting us directly. Note that even if you unsubscribe, you will continue to receive essential notifications related to your account’s operation or security.</p>
+
+        <h2>7. Security of Personal Information</h2>
+        <p>We implement advanced technical and organizational measures to protect your data from unauthorized access, alteration, loss, or disclosure:</p>
+        <ul>
+            <li>Encryption of data in transit and at rest to ensure confidentiality.</li>
+            <li>Strict access controls limiting exposure of sensitive information to authorized personnel only.</li>
+            <li>Continuous system monitoring to detect and counter cyber threats.</li>
+        </ul>
+        <p>Despite these precautions, no internet transmission or storage system can be guaranteed as entirely foolproof. We recommend adopting secure practices, such as using strong passwords and remaining vigilant against phishing attempts, to further protect your account.</p>
+
+        <h2>8. Links to Other Websites</h2>
+        <p>Our services may include links to third-party websites or resources, such as economic news platforms or external analysis tools. These sites operate under their own privacy policies, over which we have no control. We encourage you to review the policies of these third parties before providing them with personal information. Finn disclaims any responsibility for the privacy practices or data security of these external sites.</p>
+
+        <h2>9. Children Under 18</h2>
+        <p>Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from minors. If we discover that a user under 18 has provided us with data, we will take immediate steps to delete it from our systems. If you believe a minor has used our services, please notify us promptly so we can take action.</p>
+
+        <h2>10. Privacy Rights and Choices</h2>
+        <p>You have several rights regarding your personal information:</p>
+        <ul>
+            <li><strong>Right of Access:</strong> obtain a copy of the information we hold about you.</li>
+            <li><strong>Right to Rectification:</strong> correct or update your data if it is inaccurate.</li>
+            <li><strong>Right to Erasure:</strong> request the deletion of your personal information.</li>
+            <li><strong>Right to Portability:</strong> receive your data in a structured, machine-readable format.</li>
+            <li><strong>Right to Object:</strong> oppose certain processing activities, including for marketing purposes.</li>
+            <li><strong>Right to Restriction:</strong> limit the use of your data under specific circumstances.</li>
+            <li><strong>Withdrawal of Consent:</strong> revoke your agreement to certain communications or processing.</li>
+        </ul>
+        <p>To exercise these rights or adjust your preferences (e.g., disabling marketing alerts), contact us at the address below. We will respond to your requests within the timeframes required by applicable law.</p>
+
+        <h2>11. Changes to This Privacy Policy</h2>
+        <p>We may update this Privacy Policy to reflect changes in our services, legal developments, or enhancements to our data protection practices. Any significant changes will be communicated to you via email or through a notice on our platform prior to their effective date. We encourage you to review this page periodically to stay informed about our privacy commitments.</p>
+
+        <h2>12. How to Contact Us</h2>
+        <p>For any questions, information requests, or to exercise your rights under this Privacy Policy, please reach out to us:</p>
+        <ul>
+            <li><strong>Email:</strong> <a href="mailto:finnPrime@gmail.com">finnPrime@gmail.com</a></li>
+        </ul>
+        <p>We are committed to addressing your inquiries promptly and providing clear, precise responses in a timely manner.</p>
+    </div>
+</body>
+</html>

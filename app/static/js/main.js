@@ -80,6 +80,10 @@ function loadRecentConversations() {
     fetch('/api/conversations')
         .then(response => response.json())
         .then(conversations => {
+            if (Object.keys(conversations).length === 0) {
+                conversationsContainer.innerHTML = '<div class="no-conversations">No recent conversations</div>';
+                return;
+            }
 
             let conversationsHtml = '';
             
