@@ -49,10 +49,10 @@
       justify-content: space-between;
     }
     .step2-active .container {
-      max-width: 480px !important; /* Augmentation de la largeur pour step2 */
-      height: auto !important; /* Hauteur auto pour s'adapter au contenu */
-      min-height: 550px !important; /* Hauteur minimale */
-      padding: 1.5rem !important; /* Augmentation du padding intérieur */
+      max-width: 480px !important;
+      height: auto !important;
+      min-height: 650px !important; /* Augmenté pour la checklist */
+      padding: 1.5rem !important;
     }
     .back-link {
       align-self: flex-start;
@@ -78,7 +78,7 @@
       width: 100%;
       height: 1px;
       background-color: #e0e0e0;
-      margin: 1rem 0 !important; /* Augmentation de la marge */
+      margin: 1rem 0 !important;
     }
     .logo-container {
       display: flex;
@@ -114,10 +114,10 @@
     }
     .step1 .input-group {
       gap: 1rem;
-      margin-top: 4rem; /* Augmentation de la marge pour descendre davantage */
+      margin-top: 4rem;
     }
     .step2 .input-group {
-      gap: 0.8rem; /* Augmenté pour donner plus d'espace entre les éléments */
+      gap: 0.8rem;
     }
     .step1 .input-label,
     .step2 .input-label {
@@ -147,7 +147,7 @@
     .step2 input {
       padding: 0.8rem;
       font-size: 0.9rem;
-      height: 45px; /* Légèrement plus haut */
+      height: 45px;
     }
     input:focus {
       outline: none;
@@ -181,8 +181,8 @@
     .step2 .btn {
       padding: 0.8rem;
       font-size: 0.9rem;
-      height: 45px; /* Légèrement plus haut */
-      margin-top: 1rem; /* Plus d'espace */
+      height: 45px;
+      margin-top: 1rem;
     }
     .btn-submit-email {
       background-color: black;
@@ -203,8 +203,8 @@
     .bottom-text {
       font-size: 0.8rem;
       color: #666;
-      margin-top: auto; /* Pousse le texte tout en bas */
-      margin-bottom: 0.5rem; /* Petite marge pour éviter de coller au bord */
+      margin-top: auto;
+      margin-bottom: 0.5rem;
       text-align: center;
     }
     .bottom-text a {
@@ -223,73 +223,87 @@
       font-size: 0.9rem;
       margin-top: 0.3rem;
     }
-    
-    /* Styles responsives */
-   /* Styles responsives */
-@media (max-width: 500px) {
-  body {
-    background-color: white; /* Fond blanc sur mobile */
-  }
-  .container {
-    max-width: 100%;
-    height: auto;
-    min-height: 100vh;
-    margin: 0;
-    padding: 1.5rem;
-    box-shadow: none; /* Enlever l'ombre sur mobile */
-    border-radius: 0; /* Pas de coins arrondis sur mobile */
-  }
-  .step2-active .container {
-    max-width: 100% !important;
-    min-height: 100vh !important;
-    padding: 1.5rem !important;
-  }
-  .logo {
-    width: 50px;
-    height: 50px;
-  }
-  .brand-name {
-    font-size: 1.8rem;
-  }
-  
-  /* Modifications pour l'étape 1 */
-  .step1 {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centre verticalement */
-    min-height: 70vh; /* Donne assez d'espace pour centrer */
-  }
-  .step1 .input-group {
-    margin-top: 0; /* Supprime la marge supérieure fixe */
-    gap: 1.2rem; /* Plus d'espace entre les éléments */
-  }
-  .step1 .logo-container {
-    margin-bottom: 3rem; /* Plus d'espace après le logo */
-  }
-  
-  /* Assurer que le séparateur est visible UNIQUEMENT en étape 2 */
-  .separator {
-    display: none !important; /* Cache par défaut */
-  }
-  .step2-active .separator {
-    display: block !important; /* Affiche en étape 2 */
-    margin: 1rem 0 !important;
-  }
-  
-  /* Ajustements pour les champs et boutons */
-  .step1 input {
-    padding: 0.8rem;
-    height: 50px;
-  }
-  .bottom-text {
-    margin-top: 3rem; /* Espace en bas de l'écran */
-  }
-}
+    .password-checklist {
+      text-align: left;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    .password-checklist ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .password-checklist li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.3rem;
+    }
+    .password-checklist li::before {
+      content: '✗';
+      color: #d00;
+      margin-right: 0.5rem;
+    }
+    .password-checklist li.valid::before {
+      content: '✓';
+      color: #0a0;
+    }
+    @media (max-width: 500px) {
+      body {
+        background-color: white;
+      }
+      .container {
+        max-width: 100%;
+        height: auto;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1.5rem;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      .step2-active .container {
+        max-width: 100% !important;
+        min-height: 100vh !important;
+        padding: 1.5rem !important;
+      }
+      .logo {
+        width: 50px;
+        height: 50px;
+      }
+      .brand-name {
+        font-size: 1.8rem;
+      }
+      .step1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 70vh;
+      }
+      .step1 .input-group {
+        margin-top: 0;
+        gap: 1.2rem;
+      }
+      .step1 .logo-container {
+        margin-bottom: 3rem;
+      }
+      .separator {
+        display: none !important;
+      }
+      .step2-active .separator {
+        display: block !important;
+        margin: 1rem 0 !important;
+      }
+      .step1 input {
+        padding: 0.8rem;
+        height: 50px;
+      }
+      .bottom-text {
+        margin-top: 3rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Logo + Finn -->
     <div class="logo-container">
       <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
@@ -297,13 +311,11 @@
       <span class="brand-name">Finn</span>
     </div>
 
-    <!-- Back Link for Step 2 (déplacé après le logo) -->
     <div class="back-link" id="backLink" style="display: none;">
       <a href="#" id="backToStep1">Back</a>
     </div>
     <div class="separator" id="separator" style="display: none;"></div>
 
-    <!-- ÉTAPE 1 : Email + Submit + Google -->
     <div class="step1">
       <div class="input-group">
         <label class="input-label" for="emailInput">Email</label>
@@ -314,6 +326,7 @@
           placeholder="Enter your email"
           required
         />
+        <div class="error" id="emailError"></div>
         <button class="btn btn-submit-email" id="btnSubmitEmail">Submit</button>
         <button class="btn btn-google" id="btnGoogle">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
@@ -327,7 +340,6 @@
       </div>
     </div>
 
-    <!-- ÉTAPE 2 : Formulaire complet (masqué initialement) -->
     <div class="step2" id="step2" style="display: none;">
       <div class="input-group">
         <label class="input-label" for="firstName">First name</label>
@@ -353,6 +365,16 @@
               <line x1="1" y1="1" x2="23" y2="23"/>
             </svg>
           </span>
+        </div>
+        <div class="password-checklist" id="passwordChecklist">
+          <ul>
+            <li id="minLength">At least 8 characters</li>
+            <li id="uppercase">One uppercase letter</li>
+            <li id="lowercase">One lowercase letter</li>
+            <li id="digit">One digit</li>
+            <li id="symbol">One symbol (!@#$%^&*)</li>
+            <li id="noName">No first or last name</li>
+          </ul>
         </div>
 
         <label class="input-label" for="confirmPassword">Confirm password</label>
@@ -386,6 +408,7 @@
       const emailStep2 = document.getElementById("emailStep2");
       const btnSignupFinal = document.getElementById("btnSignupFinal");
       const errorMsg = document.getElementById("errorMsg");
+      const emailError = document.getElementById("emailError");
       const btnGoogle = document.getElementById("btnGoogle");
       const backLink = document.getElementById("backLink");
       const separator = document.getElementById("separator");
@@ -396,6 +419,15 @@
       const confirmPasswordInput = document.getElementById("confirmPassword");
       const passwordToggle = document.getElementById("passwordToggle");
       const confirmPasswordToggle = document.getElementById("confirmPasswordToggle");
+
+      const checklist = {
+        minLength: document.getElementById("minLength"),
+        uppercase: document.getElementById("uppercase"),
+        lowercase: document.getElementById("lowercase"),
+        digit: document.getElementById("digit"),
+        symbol: document.getElementById("symbol"),
+        noName: document.getElementById("noName")
+      };
 
       function togglePasswordVisibility(input, toggleElement) {
         if (input.type === "password") {
@@ -425,24 +457,42 @@
         togglePasswordVisibility(confirmPasswordInput, confirmPasswordToggle);
       });
 
-      btnSubmitEmail.addEventListener("click", () => {
+      btnSubmitEmail.addEventListener("click", async () => {
         const emailValue = emailInput.value.trim();
         if (!validateEmail(emailValue)) {
-          alert("Please enter a valid email address.");
+          emailError.textContent = "Please enter a valid email address.";
           return;
         }
-        step1.style.display = "none";
-        step2.style.display = "flex";
-        backLink.style.display = "block";
-        separator.style.display = "block";
-        emailStep2.value = emailValue;
-        document.body.classList.add("step2-active");
-        container.classList.add("step2-active");
-        
-        // Force le refresh du style et l'affichage du séparateur
-        separator.style.display = "block";
-        separator.style.visibility = "visible";
-        separator.style.opacity = "1";
+
+        try {
+          const response = await fetch("/check-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: emailValue }),
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            emailError.textContent = data.message;
+            return;
+          }
+
+          emailError.textContent = "";
+          step1.style.display = "none";
+          step2.style.display = "flex";
+          backLink.style.display = "block";
+          separator.style.display = "block";
+          emailStep2.value = emailValue;
+          document.body.classList.add("step2-active");
+          container.classList.add("step2-active");
+          separator.style.display = "block";
+          separator.style.visibility = "visible";
+          separator.style.opacity = "1";
+        } catch (err) {
+          emailError.textContent = "Server error. Please try again.";
+        }
       });
 
       backToStep1.addEventListener("click", () => {
@@ -459,6 +509,31 @@
         return re.test(String(email).toLowerCase());
       }
 
+      function updatePasswordChecklist(password, firstName, lastName) {
+        const minLength = /.{8,}/.test(password);
+        const uppercase = /[A-Z]/.test(password);
+        const lowercase = /[a-z]/.test(password);
+        const digit = /\d/.test(password);
+        const symbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const noName = !password.toLowerCase().includes(firstName.toLowerCase()) && 
+                       !password.toLowerCase().includes(lastName.toLowerCase());
+
+        checklist.minLength.classList.toggle("valid", minLength);
+        checklist.uppercase.classList.toggle("valid", uppercase);
+        checklist.lowercase.classList.toggle("valid", lowercase);
+        checklist.digit.classList.toggle("valid", digit);
+        checklist.symbol.classList.toggle("valid", symbol);
+        checklist.noName.classList.toggle("valid", noName);
+
+        return minLength && uppercase && lowercase && digit && symbol && noName;
+      }
+
+      passwordInput.addEventListener("input", () => {
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        updatePasswordChecklist(passwordInput.value, firstName, lastName);
+      });
+
       btnSignupFinal.addEventListener("click", async () => {
         const firstName = document.getElementById("firstName").value.trim();
         const lastName = document.getElementById("lastName").value.trim();
@@ -470,6 +545,13 @@
           errorMsg.textContent = "All fields are required.";
           return;
         }
+
+        const isPasswordValid = updatePasswordChecklist(password, firstName, lastName);
+        if (!isPasswordValid) {
+          errorMsg.textContent = "Password does not meet all requirements.";
+          return;
+        }
+
         if (password !== confirmPassword) {
           errorMsg.textContent = "Passwords do not match.";
           return;
@@ -504,5 +586,5 @@
       });
     });
   </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91e66be8bc3f676b',t:'MTc0MTY0NzU1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

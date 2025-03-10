@@ -79,6 +79,29 @@ def show_inscription():
     # Renvoie le template inscription.html
     return render_template('inscription.html')
 
+# Nouvelle route pour vérifier l'email
+@main.route('/check-email', methods=['POST'])
+def check_email():
+    try:
+        data = request.get_json()
+        if not data or "email" not in data:
+            return jsonify({"message": "Email is required"}), 400
+        
+        email = data.get("email")
+        if not email:
+            return jsonify({"message": "Email is required"}), 400
+
+        # Vérifier si l'utilisateur existe déjà
+        existing_user = users_col.find_one({"email": email})
+        if existing_user:
+            return jsonify({"message": "This email is already registered"}), 400
+
+        return jsonify({"message": "Email is available"}), 200
+    except Exception as e:
+        print(f"Error in check_email: {str(e)}")
+        return jsonify({"message": "Server error. Please try again."}), 500
+    
+
 @main.route('/inscription', methods=['POST'])
 def process_inscription():
     # Récupération des données JSON depuis le fetch() du front
@@ -94,7 +117,21 @@ def process_inscription():
     # Vérifier si l'utilisateur existe déjà
     existing_user = users_col.find_one({"email": email})
     if existing_user:
-        return jsonify({"message": "User already exists"}), 400
+        return jsonify({"message": "This email is already registered"}), 400
+
+    # Vérification de la robustesse du mot de passe
+    if len(password) < 8:
+        return jsonify({"message": "Password must be at least 8 characters"}), 400
+    if not re.search(r"[A-Z]", password):
+        return jsonify({"message": "Password must contain an uppercase letter"}), 400
+    if not re.search(r"[a-z]", password):
+        return jsonify({"message": "Password must contain a lowercase letter"}), 400
+    if not re.search(r"\d", password):
+        return jsonify({"message": "Password must contain a digit"}), 400
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        return jsonify({"message": "Password must contain a symbol"}), 400
+    if first_name.lower() in password.lower() or last_name.lower() in password.lower():
+        return jsonify({"message": "Password cannot contain your first or last name"}), 400
 
     # Hasher le mot de passe
     hashed_pw = generate_password_hash(password)

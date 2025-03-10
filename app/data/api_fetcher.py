@@ -107,12 +107,25 @@ class DataCollector:
             session.headers.update({'User-Agent': 'Mozilla/5.0'})
             stock = yf.Ticker(symbol, session=session)
             
-            info = stock.info
+            # Récupération des données historiques sur 5 jours
             df = stock.history(period='5d')
             
-            current_price = df['Close'].iloc[-1]
-            prev_close = df['Close'].iloc[-2] if len(df) > 1 else df['Open'].iloc[-1]
-            change = ((current_price - prev_close) / prev_close) * 100
+            if df.empty:
+                raise ValueError(f"Aucune donnée récupérée pour le symbole {symbol}")
+            
+            # Vérifier la présence des colonnes et utiliser des valeurs par défaut si nécessaire
+            current_price = df['Close'].iloc[-1] if 'Close' in df.columns and not df.empty else None
+            prev_close = df['Close'].iloc[-2] if 'Close' in df.columns and len(df) > 1 else current_price if current_price else None
+
+            if current_price is None or prev_close is None:
+                raise ValueError(f"Données de prix insuffisantes pour {symbol}")
+
+            change = ((current_price - prev_close) / prev_close) * 100 if prev_close != 0 else 0
+            
+            # Récupérer high, low, open avec gestion des erreurs
+            high = df['High'].iloc[-1] if 'High' in df.columns and not df.empty else None
+            low = df['Low'].iloc[-1] if 'Low' in df.columns and not df.empty else None
+            open_price = df['Open'].iloc[-1] if 'Open' in df.columns and not df.empty else None
 
             return {
                 'name': name,
@@ -120,18 +133,18 @@ class DataCollector:
                 'price': round(current_price, 2),
                 'change': round(change, 2),
                 'change_value': round(current_price - prev_close, 2),
-                'volume': int(df['Volume'].iloc[-1]),
-                'open': round(df['Open'].iloc[-1], 2),
-                'high': round(df['High'].iloc[-1], 2),
-                'low': round(df['Low'].iloc[-1], 2),
-                'pe_ratio': info.get('forwardPE'),
-                'market_cap': info.get('marketCap'),
-                'dividend_yield': info.get('dividendYield')
+                'volume': int(df['Volume'].iloc[-1]) if 'Volume' in df.columns and not df.empty else 0,
+                'open': round(open_price, 2) if open_price is not None else None,
+                'high': round(high, 2) if high is not None else None,
+                'low': round(low, 2) if low is not None else None,
+                'pe_ratio': stock.info.get('forwardPE'),
+                'market_cap': stock.info.get('marketCap'),
+                'dividend_yield': stock.info.get('dividendYield')
             }
 
         except Exception as e:
             raise RuntimeError(f"Erreur lors de la collecte des données actuelles: {e}")
-
+        
     def get_crypto_historical(self, query: str) -> pd.DataFrame:
         """Récupère les données historiques d'une crypto"""
         result = self.mapper.get_crypto_info(query)
