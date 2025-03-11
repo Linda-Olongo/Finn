@@ -112,7 +112,7 @@ def welcome_redirect(token):
 # Fonction pour envoyer des mails de bienvenue à la plateforme
 def send_welcome_email(to_email, first_name, user_id=None, token=None):
     """
-    Envoie un email de bienvenue avec un lien adapté à la situation
+    Envoie un email de bienvenue avec le style violet original sans liens
     
     Args:
         to_email: Email du destinataire
@@ -120,12 +120,6 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
         user_id: ID utilisateur (optionnel)
         token: Token JWT actif (optionnel)
     """
-    # Créer un lien de bienvenue sécurisé
-    if token:
-        action_link = f"{SITE_URL}/welcome/{token}"
-    else:
-        action_link = f"{SITE_URL}/connexion"
-        
     try:
         message = Mail(
             from_email=SENDER_EMAILS,
@@ -147,24 +141,10 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         text-align: center;
                         padding: 20px 0;
                         border-bottom: 1px solid #e0e0e0;
-                    }}
-                    .logo {{
-                        width: 60px;
-                        height: 60px;
-                        margin-bottom: 10px;
+                        color: #5D3FD3; /* Violet */
                     }}
                     .content {{
                         padding: 20px;
-                    }}
-                    .button {{
-                        display: inline-block;
-                        background-color: #333333;
-                        color: #ffffff !important;
-                        text-decoration: none;
-                        padding: 12px 25px;
-                        border-radius: 5px;
-                        margin: 20px 0;
-                        font-weight: bold;
                     }}
                     .features {{
                         display: flex;
@@ -179,6 +159,14 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         background-color: #f5f5f5;
                         margin: 0 5px;
                     }}
+                    .feature h3 {{
+                        color: #5D3FD3; /* Violet */
+                    }}
+                    .highlight {{
+                        font-weight: bold;
+                        color: #5D3FD3; /* Violet */
+                        font-size: 1.1em;
+                    }}
                     .footer {{
                         text-align: center;
                         font-size: 12px;
@@ -190,9 +178,6 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
             </head>
             <body>
                 <div class="header">
-                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
-                    </svg>
                     <h1>Welcome to Finn 2.1 Prime!</h1>
                 </div>
                 
@@ -203,9 +188,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                     
                     <p>With Finn, you'll unlock powerful insights that will transform the way you approach your financial decisions.</p>
                     
-                    <div style="text-align: center;">
-                        <a href="{action_link}" class="button">Start Exploring Now</a>
-                    </div>
+                    <p class="highlight">Your account is now active. Connect to the platform to start exploring all our features.</p>
                     
                     <div class="features">
                         <div class="feature">
@@ -222,7 +205,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         </div>
                     </div>
                     
-                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <a href="mailto:{SENDER_EMAILS}">{SENDER_EMAILS}</a>.</p>
+                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <span style="color: #5D3FD3;">{SENDER_EMAILS}</span>.</p>
                     
                     <p>Best regards,<br>The Finn Team</p>
                 </div>
@@ -235,7 +218,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
             </html>
             """
         )
-        # Ajouter ces lignes pour le débogage
+        
         print(f"Sending email from: {SENDER_EMAILS} to: {to_email}")
         print(f"Using API key (first 5 chars): {SENDGRID_API_KEYS[:5]}...")
         
@@ -245,12 +228,11 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
         return True
     except Exception as e:
         print(f"Error sending welcome email to {to_email}: {str(e)}")
-        # Corrigez cette ligne - e.to_dict n'est pas une méthode
-        # Si vous avez besoin de plus d'informations sur l'erreur:
         print(f"Error type: {type(e).__name__}")
         if hasattr(e, 'body'):
             print(f"Error body: {e.body}")
         return False
+    
     
 # INSCRIPTION (MANUELLE) - GET => Formulaire, POST => Création
 @main.route('/inscription', methods=['GET'])
