@@ -35,7 +35,8 @@ JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_hex(32))
 JWT_EXPIRATION = 30  # en jours
 
 # Chargé SendGrid pour l'envoie des liens de reset mot de passe
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+SENDGRID_API_KEYS = os.getenv("SENDGRID_API_KEYS")
+print(f"Actual API key used: {SENDGRID_API_KEYS}")
 SENDER_EMAILS = os.getenv("SENDER_EMAILS")
 
 # Configuration de MongoDB 
@@ -234,14 +235,23 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
             </html>
             """
         )
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        # Ajouter ces lignes pour le débogage
+        print(f"Sending email from: {SENDER_EMAILS} to: {to_email}")
+        print(f"Using API key (first 5 chars): {SENDGRID_API_KEYS[:5]}...")
+        
+        sg = SendGridAPIClient(SENDGRID_API_KEYS)
         response = sg.send(message)
         print(f"Welcome email sent to {to_email}: {response.status_code}")
         return True
     except Exception as e:
         print(f"Error sending welcome email to {to_email}: {str(e)}")
+        # Corrigez cette ligne - e.to_dict n'est pas une méthode
+        # Si vous avez besoin de plus d'informations sur l'erreur:
+        print(f"Error type: {type(e).__name__}")
+        if hasattr(e, 'body'):
+            print(f"Error body: {e.body}")
         return False
-
+    
 # INSCRIPTION (MANUELLE) - GET => Formulaire, POST => Création
 @main.route('/inscription', methods=['GET'])
 def show_inscription():
@@ -363,10 +373,10 @@ def google_signup():
             }
         },
         scopes=[
-            "https://www.googleapis.com/auth/userinfo.email",
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "openid",
-        ]
+        "openid",
+        "email",
+        "profile"
+    ]
     )
     flow.redirect_uri = GOOGLE_REDIRECT_URI
 
@@ -982,7 +992,7 @@ def request_password_reset():
     )
 
     try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        sg = SendGridAPIClient(SENDGRID_API_KEYS)
         response = sg.send(message)
         print(f"Email sent: {response.status_code}")
     except Exception as e:
