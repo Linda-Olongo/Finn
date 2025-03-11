@@ -112,7 +112,7 @@ def welcome_redirect(token):
 # Fonction pour envoyer des mails de bienvenue à la plateforme
 def send_welcome_email(to_email, first_name, user_id=None, token=None):
     """
-    Envoie un email de bienvenue avec le style violet original sans liens
+    Envoie un email de bienvenue simple sans liens
     
     Args:
         to_email: Email du destinataire
@@ -141,7 +141,9 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         text-align: center;
                         padding: 20px 0;
                         border-bottom: 1px solid #e0e0e0;
-                        color: #5D3FD3; /* Violet */
+                    }}
+                    h1 {{
+                        color: #000000;
                     }}
                     .content {{
                         padding: 20px;
@@ -160,11 +162,11 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         margin: 0 5px;
                     }}
                     .feature h3 {{
-                        color: #5D3FD3; /* Violet */
+                        color: #000000;
                     }}
                     .highlight {{
                         font-weight: bold;
-                        color: #5D3FD3; /* Violet */
+                        color: #000000;
                         font-size: 1.1em;
                     }}
                     .footer {{
@@ -205,7 +207,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         </div>
                     </div>
                     
-                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <span style="color: #5D3FD3;">{SENDER_EMAILS}</span>.</p>
+                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at {SENDER_EMAILS}.</p>
                     
                     <p>Best regards,<br>The Finn Team</p>
                 </div>
