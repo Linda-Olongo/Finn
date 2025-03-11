@@ -36,7 +36,7 @@ JWT_EXPIRATION = 30  # en jours
 
 # Chargé SendGrid pour l'envoie des liens de reset mot de passe
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+SENDER_EMAILS = os.getenv("SENDER_EMAILS")
 
 # Configuration de MongoDB 
 MONGO_URI = os.getenv("MONGO_URI") 
@@ -48,7 +48,7 @@ conversations_col = db["conversations"]  # Nouvelle collection pour les conversa
 # Définition de SITE_URL pour tous les environnements
 if os.getenv("RENDER") == "true" or os.getenv("IS_PRODUCTION") == "true":
     # On est sur Render ou en production
-    SITE_URL = os.getenv("RENDER_EXTERNAL_URLS", "https://votre-app.onrender.com")
+    SITE_URL = os.getenv("RENDER_EXTERNAL_URL", "https://votre-app.onrender.com")
 else:
     # On est en développement local
     SITE_URL = os.getenv("LOCAL_SITE_URL", "http://localhost:5000")
@@ -127,7 +127,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
         
     try:
         message = Mail(
-            from_email=SENDER_EMAIL,
+            from_email=SENDER_EMAILS,
             to_emails=to_email,
             subject="Welcome to Finn 2.1 Prime! Your Financial Journey Begins",
             html_content=f"""
@@ -221,7 +221,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         </div>
                     </div>
                     
-                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <a href="mailto:{SENDER_EMAIL}">{SENDER_EMAIL}</a>.</p>
+                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <a href="mailto:{SENDER_EMAILS}">{SENDER_EMAILS}</a>.</p>
                     
                     <p>Best regards,<br>The Finn Team</p>
                 </div>
@@ -969,7 +969,7 @@ def request_password_reset():
 
     # Envoyer l'email via SendGrid
     message = Mail(
-        from_email=SENDER_EMAIL,
+        from_email=SENDER_EMAILS,
         to_emails=email,
         subject="Finn - Reset Your Password",
         html_content=f"""
