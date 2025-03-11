@@ -38,27 +38,33 @@ JWT_EXPIRATION = 30  # en jours
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 
-# 1) Configuration de MongoDB 
+# Configuration de MongoDB 
 MONGO_URI = os.getenv("MONGO_URI") 
 mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["finn"]
 users_col = db["users"] # Nouvelle collection pour les utilisateurs
 conversations_col = db["conversations"]  # Nouvelle collection pour les conversations
 
-# 2) Configuration de Google OAuth
+# Définition de SITE_URL pour tous les environnements
+if os.getenv("RENDER") == "true" or os.getenv("IS_PRODUCTION") == "true":
+    # On est sur Render ou en production
+    SITE_URL = os.getenv("RENDER_EXTERNAL_URLS", "https://votre-app.onrender.com")
+else:
+    # On est en développement local
+    SITE_URL = os.getenv("LOCAL_SITE_URL", "http://localhost:5000")
+
+# Configuration de Google OAuth
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET") 
 BASE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 
-# Détection de l'environnement Render
+# Définition de GOOGLE_REDIRECT_URI
 if os.getenv("RENDER") == "true" or os.getenv("IS_PRODUCTION") == "true":
-    # On est sur Render ou en production
-    SITE_URL = os.getenv("RENDER_EXTERNAL_URL", "https://votre-app.onrender.com")
     GOOGLE_REDIRECT_URI = f"{SITE_URL}/google_callback"
 else:
-    # On est en développement local
     GOOGLE_REDIRECT_URI = BASE_REDIRECT_URI
-
+    
+    
 main = Blueprint('main', __name__)
 news_handler = NewsHandler()
 gemini_handler = GeminiHandler()
@@ -72,6 +78,169 @@ def index():
     # Afficher la page loading.html comme page d'accueil
     return render_template('loading.html')
 
+# 1. Créer une route spécifique pour la redirection depuis les emails
+@main.route('/welcome/<token>')
+def welcome_redirect(token):
+    """
+    Route spéciale pour la redirection depuis les emails de bienvenue
+    Valide le token et redirige vers /chat
+    """
+    try:
+        # Décoder le token
+        data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user_id = data.get('user_id')
+        
+        # Vérifier que l'utilisateur existe
+        user = users_col.find_one({"_id": user_id})
+        if not user:
+            # Rediriger vers la connexion si utilisateur non trouvé
+            return redirect(url_for('main.show_connexion'))
+            
+        # Créer un cookie avec le token et rediriger vers /chat
+        response = make_response(redirect(url_for('main.chat')))
+        response.set_cookie('finnToken', token, httponly=True, max_age=30*24*60*60)  # 30 jours
+        return response
+        
+    except jwt.ExpiredSignatureError:
+        # Token expiré
+        return redirect(url_for('main.show_connexion'))
+    except jwt.InvalidTokenError:
+        # Token invalide
+        return redirect(url_for('main.show_connexion'))
+    
+# Fonction pour envoyer des mails de bienvenue à la plateforme
+def send_welcome_email(to_email, first_name, user_id=None, token=None):
+    """
+    Envoie un email de bienvenue avec un lien adapté à la situation
+    
+    Args:
+        to_email: Email du destinataire
+        first_name: Prénom du destinataire
+        user_id: ID utilisateur (optionnel)
+        token: Token JWT actif (optionnel)
+    """
+    # Créer un lien de bienvenue sécurisé
+    if token:
+        action_link = f"{SITE_URL}/welcome/{token}"
+    else:
+        action_link = f"{SITE_URL}/connexion"
+        
+    try:
+        message = Mail(
+            from_email=SENDER_EMAIL,
+            to_emails=to_email,
+            subject="Welcome to Finn 2.1 Prime! Your Financial Journey Begins",
+            html_content=f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #333333;
+                        max-width: 600px;
+                        margin: 0 auto;
+                    }}
+                    .header {{
+                        text-align: center;
+                        padding: 20px 0;
+                        border-bottom: 1px solid #e0e0e0;
+                    }}
+                    .logo {{
+                        width: 60px;
+                        height: 60px;
+                        margin-bottom: 10px;
+                    }}
+                    .content {{
+                        padding: 20px;
+                    }}
+                    .button {{
+                        display: inline-block;
+                        background-color: #333333;
+                        color: #ffffff !important;
+                        text-decoration: none;
+                        padding: 12px 25px;
+                        border-radius: 5px;
+                        margin: 20px 0;
+                        font-weight: bold;
+                    }}
+                    .features {{
+                        display: flex;
+                        justify-content: space-between;
+                        margin: 30px 0;
+                        text-align: center;
+                    }}
+                    .feature {{
+                        flex: 1;
+                        padding: 15px;
+                        border-radius: 5px;
+                        background-color: #f5f5f5;
+                        margin: 0 5px;
+                    }}
+                    .footer {{
+                        text-align: center;
+                        font-size: 12px;
+                        color: #999999;
+                        padding: 20px 0;
+                        border-top: 1px solid #e0e0e0;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
+                    </svg>
+                    <h1>Welcome to Finn 2.1 Prime!</h1>
+                </div>
+                
+                <div class="content">
+                    <h2>Hello {first_name},</h2>
+                    
+                    <p>Thank you for joining Finn 2.1 Prime! We're thrilled to have you on board and can't wait for you to experience the future of financial intelligence.</p>
+                    
+                    <p>With Finn, you'll unlock powerful insights that will transform the way you approach your financial decisions.</p>
+                    
+                    <div style="text-align: center;">
+                        <a href="{action_link}" class="button">Start Exploring Now</a>
+                    </div>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <h3>AI Chat</h3>
+                            <p>Get instant financial insights and advice through our advanced AI assistant.</p>
+                        </div>
+                        <div class="feature">
+                            <h3>Market News</h3>
+                            <p>Stay updated with the latest market trends and financial news.</p>
+                        </div>
+                        <div class="feature">
+                            <h3>Market Simulator</h3>
+                            <p>Test strategies and gain trading experience in our risk-free environment.</p>
+                        </div>
+                    </div>
+                    
+                    <p>If you have any questions or need assistance, don't hesitate to reach out to our support team at <a href="mailto:{SENDER_EMAIL}">{SENDER_EMAIL}</a>.</p>
+                    
+                    <p>Best regards,<br>The Finn Team</p>
+                </div>
+                
+                <div class="footer">
+                    <p>© 2025 Finn. All rights reserved.</p>
+                    <p>This email was sent to {to_email}. If you didn't sign up for Finn, please ignore this email.</p>
+                </div>
+            </body>
+            </html>
+            """
+        )
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(f"Welcome email sent to {to_email}: {response.status_code}")
+        return True
+    except Exception as e:
+        print(f"Error sending welcome email to {to_email}: {str(e)}")
+        return False
 
 # INSCRIPTION (MANUELLE) - GET => Formulaire, POST => Création
 @main.route('/inscription', methods=['GET'])
@@ -102,6 +271,7 @@ def check_email():
         return jsonify({"message": "Server error. Please try again."}), 500
     
 
+# Pour l'inscription manuelle
 @main.route('/inscription', methods=['POST'])
 def process_inscription():
     # Récupération des données JSON depuis le fetch() du front
@@ -137,8 +307,9 @@ def process_inscription():
     hashed_pw = generate_password_hash(password)
 
     # Créer le nouveau user
+    user_id = str(uuid.uuid4())
     new_user = {
-        "_id": str(uuid.uuid4()),
+        "_id": user_id,
         "firstName": first_name,
         "lastName": last_name,
         "email": email,
@@ -152,8 +323,25 @@ def process_inscription():
         "last_login": None
     }
     users_col.insert_one(new_user)
+    
+    # Créer un token JWT pour l'authentification automatique
+    token_expiration = datetime.utcnow() + timedelta(days=JWT_EXPIRATION)
+    token_data = {
+        "user_id": user_id,
+        "email": email,
+        "exp": token_expiration
+    }
+    token = jwt.encode(token_data, JWT_SECRET, algorithm="HS256")
 
-    return jsonify({"message": "User created successfully"}), 200
+    # Envoyer l'email de bienvenue avec le token
+    send_welcome_email(email, first_name, user_id, token)
+
+    # Renvoyer le token pour permettre au client de rediriger l'utilisateur
+    return jsonify({
+        "message": "User created successfully", 
+        "token": token
+    }), 200
+
 
 
 # INSCRIPTION VIA GOOGLE OAUTH
@@ -198,10 +386,10 @@ def google_callback():
     """
     1) Google redirige ici après le consentement
     2) On récupère le token, on vérifie l'user
-    3) On l'insère en BDD si pas encore existant
+    3) On l’insère en BDD si pas encore existant
     4) On le connecte (session) et on redirige
     """
-    state = request.args.get('state') #  Récupérer l'état depuis la requête au lieu de la session
+    state = request.args.get('state')  # Récupérer l’état depuis la requête
     
     flow = Flow.from_client_config(
         {
@@ -275,6 +463,8 @@ def google_callback():
             "last_login": datetime.utcnow()
         }
         users_col.insert_one(user)
+        # Envoyer l'email de bienvenue pour un nouvel utilisateur
+        send_welcome_email(user_email, first_name)
 
     # Créer un token JWT valide pour 30 jours
     token_expiration = datetime.utcnow() + timedelta(days=JWT_EXPIRATION)
@@ -285,10 +475,11 @@ def google_callback():
     }
     token = jwt.encode(token_data, JWT_SECRET, algorithm="HS256")
 
-    # Rediriger avec le token dans l'URL (vous pouvez aussi utiliser un cookie)
+    # Rediriger avec le token dans l'URL
     return redirect(f"/chat?token={token}")
 
-# Routes - Connxion
+
+# Routes - Connexion
 @main.route('/connexion', methods=['GET'])
 def show_connexion():
     # Afficher la page de connexion

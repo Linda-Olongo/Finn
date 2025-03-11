@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from fbprophet import ProphetModel
+from models.fbprophet import ProphetModel
 from data.preprocessing import DataPreprocessor
 
 
