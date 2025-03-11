@@ -112,7 +112,7 @@ def welcome_redirect(token):
 # Fonction pour envoyer des mails de bienvenue à la plateforme
 def send_welcome_email(to_email, first_name, user_id=None, token=None):
     """
-    Envoie un email de bienvenue simple sans liens
+    Envoie un email de bienvenue sans liens et avec tout le texte en noir
     
     Args:
         to_email: Email du destinataire
@@ -133,7 +133,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                     body {{
                         font-family: Arial, sans-serif;
                         line-height: 1.6;
-                        color: #333333;
+                        color: #000000;
                         max-width: 600px;
                         margin: 0 auto;
                     }}
@@ -142,7 +142,12 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         padding: 20px 0;
                         border-bottom: 1px solid #e0e0e0;
                     }}
-                    h1 {{
+                    .logo {{
+                        width: 60px;
+                        height: 60px;
+                        margin-bottom: 10px;
+                    }}
+                    h1, h2, h3, p {{
                         color: #000000;
                     }}
                     .content {{
@@ -161,7 +166,7 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                         background-color: #f5f5f5;
                         margin: 0 5px;
                     }}
-                    .feature h3 {{
+                    .feature p {{
                         color: #000000;
                     }}
                     .highlight {{
@@ -172,14 +177,20 @@ def send_welcome_email(to_email, first_name, user_id=None, token=None):
                     .footer {{
                         text-align: center;
                         font-size: 12px;
-                        color: #999999;
+                        color: #000000;
                         padding: 20px 0;
                         border-top: 1px solid #e0e0e0;
+                    }}
+                    .footer p {{
+                        color: #000000;
                     }}
                 </style>
             </head>
             <body>
                 <div class="header">
+                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" fill="none" stroke-width="2"/>
+                    </svg>
                     <h1>Welcome to Finn 2.1 Prime!</h1>
                 </div>
                 
