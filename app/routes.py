@@ -29,7 +29,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # -- Imports des classes de traitement du chat
 from app.data.news_handler import NewsHandler
-from app.nlp.ClaudeHandler import ClaudeHandler  # Remplacer GeminiHandler par ClaudeHandler
+from app.nlp.ClaudeHandler import ClaudeHandler  
+from app.data.simulator import TradingSimulator
 
 # Clé secrète pour JWT
 JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_hex(32))
@@ -65,7 +66,8 @@ else:
 
 main = Blueprint('main', __name__)
 news_handler = NewsHandler()
-claude_handler = ClaudeHandler()  # Initialiser ClaudeHandler
+claude_handler = ClaudeHandler()  
+trading_simulator = TradingSimulator()
 
 # Configuration du logging pour éviter les logs visibles (rediriger vers un fichier)
 if not os.path.exists('logs'):
@@ -534,24 +536,224 @@ def news():
         error_message = None
     return render_template('news.html', active_page='news', news_data=news_data, categories=categories, current_category=category, company_name=company, view_type=view_type, error_message=error_message, current_user=current_user)
 
+# ROUTE POUR A SIMULATION
 @main.route('/simulator')
+
 def simulator():
+
+    # Vérification de l'authentification
+
     token = request.cookies.get('finnToken')
+
     if not token:
+
+        logger.info("Tentative d'accès à la simulation sans token")
+
         return redirect(url_for('main.show_connexion'))
+
+    
+
     try:
+
+        # Décodage du token et récupération des informations utilisateur
+
         data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+
         user_id = data['user_id']
+
         current_user = users_col.find_one({"_id": user_id})
+
+        
+
         if not current_user:
+
+            logger.warning(f"Utilisateur avec ID {user_id} non trouvé dans la base de données")
+
             response = make_response(redirect(url_for('main.show_connexion')))
+
             response.delete_cookie('finnToken')
+
             return response
-    except:
+
+        
+
+        logger.info(f"Chargement du simulateur pour l'utilisateur {user_id}")
+
+        return render_template('simulation.html', active_page='simulator', current_user=current_user)
+
+        
+
+    except jwt.ExpiredSignatureError:
+
+        logger.warning("Token expiré lors de l'accès au simulateur")
+
         response = make_response(redirect(url_for('main.show_connexion')))
+
         response.delete_cookie('finnToken')
+
         return response
-    return render_template('simulation.html', active_page='simulator', current_user=current_user)
+
+    except jwt.InvalidTokenError:
+
+        logger.warning("Token invalide lors de l'accès au simulateur")
+
+        response = make_response(redirect(url_for('main.show_connexion')))
+
+        response.delete_cookie('finnToken')
+
+        return response
+
+    except Exception as e:
+
+        logger.error(f"Erreur inattendue lors de l'accès au simulateur: {str(e)}")
+
+        response = make_response(redirect(url_for('main.show_connexion')))
+
+        response.delete_cookie('finnToken')
+
+        return response
+
+@main.route('/api/simulator/search', methods=['POST'])
+
+@auth_required
+
+def search_assets():
+
+    """Search for assets based on a query."""
+
+    data = request.get_json()
+
+    query = data.get('query', '')
+
+    if not query:
+
+        return jsonify({'error': 'Query is required'}), 400
+
+    try:
+
+        logger.info(f"Recherche d'actifs pour: {query}")
+
+        results = trading_simulator.search_assets(query)
+
+        logger.info(f"Résultats trouvés: {len(results)}")
+
+        return jsonify(results), 200
+
+    except Exception as e:
+
+        logger.error(f"Erreur lors de la recherche d'actifs: {str(e)}")
+
+        return jsonify({'error': f'Search error: {str(e)}'}), 500
+
+@main.route('/api/simulator/new-investment', methods=['POST'])
+
+@auth_required
+
+def new_investment():
+
+    """Simulate a new investment."""
+
+    data = request.get_json()
+
+    symbol = data.get('symbol')
+
+    amount = float(data.get('amount', 0))
+
+    horizon = int(data.get('horizon', 0))
+
+    risk_level = data.get('risk_level', 'moderate')
+
+    asset_type = data.get('asset_type', 'crypto')
+
+    logger.info(f"Nouvel investissement - Symbole: {symbol}, Montant: {amount}, Horizon: {horizon}, Risque: {risk_level}")
+
+    
+
+    if not all([symbol, amount > 0, horizon > 0]):
+
+        logger.warning(f"Paramètres invalides - Symbole: {symbol}, Montant: {amount}, Horizon: {horizon}")
+
+        return jsonify({'error': 'Invalid input parameters'}), 400
+
+    try:
+
+        # Convertir l'horizon en jours (comme attendu par simulator.py)
+
+        horizon_days = horizon * 30
+
+        results = trading_simulator.new_investment(symbol, amount, horizon_days, risk_level, asset_type, use_ai=True)
+
+        logger.info(f"Simulation réussie pour {symbol}")
+
+        return jsonify(results), 200
+
+    except ValueError as e:
+
+        logger.error(f"Erreur lors de la simulation: {str(e)}")
+
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+
+        logger.error(f"Erreur inattendue lors de la simulation: {str(e)}")
+
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+
+@main.route('/api/simulator/analyze-position', methods=['POST'])
+
+@auth_required
+
+def analyze_position():
+
+    """Analyze an existing portfolio position."""
+
+    data = request.get_json()
+
+    symbol = data.get('symbol')
+
+    quantity = float(data.get('quantity', 0))
+
+    avg_purchase_price = float(data.get('avg_purchase_price', 0))
+
+    horizon = int(data.get('horizon', 0))
+
+    asset_type = data.get('asset_type', 'crypto')
+
+    logger.info(f"Analyse portfolio - Symbole: {symbol}, Quantité: {quantity}, Prix d'achat: {avg_purchase_price}, Horizon: {horizon}")
+
+    
+
+    if not all([symbol, quantity > 0, avg_purchase_price > 0, horizon > 0]):
+
+        logger.warning(f"Paramètres invalides - Symbole: {symbol}, Quantité: {quantity}, Prix: {avg_purchase_price}, Horizon: {horizon}")
+
+        return jsonify({'error': 'Invalid input parameters'}), 400
+
+    try:
+
+        # Convertir l'horizon en jours (comme attendu par simulator.py)
+
+        horizon_days = horizon * 30
+
+        results = trading_simulator.analyze_portfolio(symbol, quantity, avg_purchase_price, horizon_days, asset_type, use_ai=True)
+
+        logger.info(f"Analyse réussie pour {symbol}")
+
+        return jsonify(results), 200
+
+    except ValueError as e:
+
+        logger.error(f"Erreur lors de l'analyse: {str(e)}")
+
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+
+        logger.error(f"Erreur inattendue lors de l'analyse: {str(e)}")
+
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+
+
 
 @main.route('/privacy')
 def privacy():

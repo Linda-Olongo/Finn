@@ -1,5 +1,1198 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
+<!-- Flèche de retour pour mobile -->
+<div class="back-arrow-container">
+    <a href="/chat" class="back-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#000"/>
+        </svg>
+    </a>
+</div>
 
-{% endblock %}
+<!-- Conteneur principal -->
+<div class="simulation-container">
+    <!-- En-tête -->
+    <header class="simulator-header">
+        <h1 class="title">Trading Simulator Pro</h1>
+        <p class="subtitle">Simulate investments and track your portfolio with AI-powered predictions.</p>
+    </header>
+
+    <!-- Sélecteur de mode -->
+    <div class="mode-selector">
+        <button class="mode-btn active" data-mode="new-investment">NEW INVESTMENT</button>
+        <button class="mode-btn" data-mode="portfolio">PORTFOLIO TRACKING</button>
+    </div>
+
+    <!-- Formulaire de simulation -->
+    <div class="simulator-form">
+        <!-- Formulaire pour nouvel investissement -->
+        <form id="new-investment-form" class="form active">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="asset-search">Asset</label>
+                    <input type="text" id="asset-search" placeholder="Search an asset" autocomplete="off">
+                    <div id="asset-suggestions" class="suggestions"></div>
+                </div>
+                <div class="form-group">
+                    <label for="investment-amount">Amount to Invest</label>
+                    <input type="number" id="investment-amount" placeholder="10000.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="horizon">Horizon (Days)</label>
+                    <input type="number" id="horizon" placeholder="Max 180 days" min="1" max="180">
+                </div>
+                <div class="form-group">
+                    <label for="risk-level">Risk Level</label>
+                    <select id="risk-level">
+                        <option value="faible">Low</option>
+                        <option value="modéré" selected>Moderate</option>
+                        <option value="élevé">High</option>
+                    </select>
+                </div>
+                <div class="form-group form-submit">
+                    <button type="submit" class="btn-submit">SIMULATE</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Formulaire pour suivi de portefeuille -->
+        <form id="portfolio-form" class="form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="asset-search-portfolio">Asset</label>
+                    <input type="text" id="asset-search-portfolio" placeholder="Search an asset" autocomplete="off">
+                    <div id="asset-suggestions-portfolio" class="suggestions"></div>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity Held</label>
+                    <input type="number" id="quantity" placeholder="10" step="0.0001" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="avg-purchase-price">Average Price</label>
+                    <input type="number" id="avg-purchase-price" placeholder="10000.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="horizon-portfolio">Horizon (Days)</label>
+                    <input type="number" id="horizon-portfolio" placeholder="max 180 days" min="1" max="180">
+                </div>
+                <div class="form-group form-submit">
+                    <button type="submit" class="btn-submit">ANALYZE</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Indicateur de chargement -->
+    <div id="loading-indicator" style="display: none; text-align: center; margin: 30px 0;">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+
+    <!-- Section des résultats -->
+    <div class="results-section" id="results-section" style="display: none;">
+        <!-- Asset Information -->
+        <div class="result-card asset-info-card">
+            <h2 class="result-title" id="asset-name"></h2>
+            <div class="result-stats">
+                <div class="stat">
+                    <span class="label">Current Price</span>
+                    <span class="value" id="current-price"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">24h Change</span>
+                    <span class="value" id="change-24h"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">24h Volume</span>
+                    <span class="value" id="volume-24h"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Market Cap</span>
+                    <span class="value" id="market-cap"></span>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <canvas id="forecast-chart"></canvas>
+        </div>
+    
+        <!-- New Investment Results (displayed conditionally) -->
+        <div class="result-card" id="new-investment-results">
+            <h3 class="result-subtitle">Investment Simulation</h3>
+            <div class="result-stats summary-stats">
+                <div class="stat">
+                    <span class="label">Quantity Acquired</span>
+                    <span class="value" id="investment-quantity"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Amount Invested</span>
+                    <span class="value" id="investment-amount-display"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Estimated Final Value</span>
+                    <span class="value" id="investment-future-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Expected Return</span>
+                    <span class="value" id="investment-return"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Prediction Reliability</span>
+                    <span class="value" id="investment-reliability"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Optimal Purchase Date</span>
+                    <span class="value" id="investment-optimal-date"></span>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Portfolio Results (displayed conditionally) -->
+        <div class="result-card" id="portfolio-results">
+            <h3 class="result-subtitle">Portfolio Position</h3>
+            <div class="result-stats summary-stats">
+                <div class="stat">
+                    <span class="label">Quantity Held</span>
+                    <span class="value" id="position-quantity"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Average Purchase Price</span>
+                    <span class="value" id="position-avg-price"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Initial Value</span>
+                    <span class="value" id="position-initial-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Current Value</span>
+                    <span class="value" id="position-current-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Current Return</span>
+                    <span class="value" id="position-current-return"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Future Value</span>
+                    <span class="value" id="position-future-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="label">Prediction Reliability</span>
+                    <span class="value" id="position-reliability"></span>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Recommendation Section -->
+        <div class="result-card recommendation-card">
+            <h3 class="result-subtitle">Recommendation</h3>
+            <div class="recommendation-content">
+                <span class="recommendation-type" id="recommendation-type"></span>
+                <p id="recommendation-explanation"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div id="error-message" class="error-message" style="display: none;">
+        <div class="error-content">
+            <span class="error-icon">⚠️</span>
+            <p id="error-text"></p>
+        </div>
+    </div>
+
+<style>
+    :root {
+        --text-color: #000;
+        --text-muted: #666;
+        --content-bg: #fff;
+        --border-color: #ccc;
+        --nav-bg: #f5f5f5;
+        --nav-hover: #e0e0e0;
+        --error-color: #dc3545;
+    }
+
+    /* Conteneur de la flèche de retour */
+    .back-arrow-container {
+        display: none;
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        align-items: center;
+    }
+
+    .back-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background-color: var(--nav-bg);
+        border-radius: 50%;
+        transition: background-color 0.3s;
+    }
+
+    .back-arrow:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .back-arrow svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: var(--text-color);
+    }
+
+    /* Conteneur principal */
+    .simulation-container {
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* En-tête */
+    .simulator-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .title {
+        font-size: 32px; /* Aligné avec news.html */
+        font-weight: 600; /* Aligné avec news.html */
+        color: var(--text-color);
+        margin-bottom: 16px; /* Aligné avec news.html */
+    }
+
+    .subtitle {
+        font-size: 16px; /* Aligné avec news.html */
+        color: var(--text-muted);
+        max-width: 600px; /* Aligné avec news.html */
+        margin: 0 auto;
+        margin-bottom: 32px;
+    }
+
+    /* Sélecteur de mode */
+    .mode-selector {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .mode-btn {
+        padding: 10px 20px;
+        background-color: var(--content-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        color: var(--text-color);
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .mode-btn:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .mode-btn.active {
+        background-color: var(--nav-bg);
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+
+    /* Formulaire */
+    .form {
+        display: none;
+    }
+
+    .form.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: flex-end;
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: 150px;
+        margin-bottom: 16px;
+        position: relative;
+    }
+
+    .form-group.form-submit {
+        flex: 0 0 auto;
+        min-width: 120px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--text-color);
+        background-color: white;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--border-color);
+        outline: none;
+    }
+
+    /* Suggestions de recherche */
+    .suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--content-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+    }
+
+    .suggestions.active {
+        display: block;
+    }
+
+    .suggestion-item {
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .suggestion-item:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--nav-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: var(--nav-hover);
+    }
+
+    /* Indicateur de chargement */
+    #loading-indicator {
+        margin: 30px 0;
+    }
+
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--text-color);
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Message d'erreur */
+    .error-message {
+        background-color: #ffe8e6;
+        border: 1px solid var(--error-color);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 24px;
+        display: none;
+    }
+
+    .error-message .error-content {
+        display: flex;
+        align-items: center;
+    }
+
+    .error-message .error-icon {
+        font-size: 24px;
+        margin-right: 16px;
+    }
+
+    .error-message p {
+        margin: 0;
+        color: var(--error-color);
+    }
+
+    /* Section des résultats */
+    .results-section {
+        animation: slideIn 0.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card {
+        background-color: var(--content-bg);
+        padding: 24px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 16px;
+    }
+
+    .result-subtitle {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+    }
+
+    .result-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .summary-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat .label {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    .stat .value {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    .stat .value.positive {
+        color: #28a745;
+    }
+
+    .stat .value.negative {
+        color: #dc3545;
+    }
+
+    .chart-container {
+        background-color: #1a1a1a;
+        padding: 24px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        height: 300px;
+    }
+
+    .recommendation-content {
+        text-align: center;
+    }
+
+    .recommendation-type {
+        display: inline-block;
+        font-size: 20px;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+    }
+
+    .recommendation-type.acheter {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .recommendation-type.vendre {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .recommendation-type.conserver {
+        background-color: #666;
+        color: white;
+    }
+
+    .recommendation-type.attendre {
+        background-color: #ffc107;
+        color: var(--text-color);
+    }
+
+    .recommendation-content p {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    /* Design responsive */
+    @media (max-width: 768px) {
+        .back-arrow-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px; /* Augmenté pour plus d'espace */
+        }
+
+        .simulation-container {
+            padding: 16px;
+        }
+
+        .simulator-header {
+            margin-top: 50px; /* Pousse l'en-tête plus bas pour plus d'espace sous la flèche de retour */
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 28px; /* Aligné avec news.html */
+            margin-bottom: 16px; /* Aligné avec news.html */
+        }
+
+        .subtitle {
+            font-size: 14px; /* Aligné avec news.html */
+            max-width: 90%; /* Aligné avec news.html */
+            margin: 0 auto;
+            margin-bottom: 16px;
+        }
+
+        .mode-selector {
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .form-row {
+            flex-direction: column;
+        }
+
+        .form-group {
+            min-width: 100%;
+        }
+
+        .form-group.form-submit {
+            min-width: 100%;
+        }
+
+        .form-group label {
+            font-size: 12px;
+        }
+
+        .form-group input,
+        .form-group select {
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            font-size: 14px;
+        }
+
+        .result-stats,
+        .summary-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-container {
+            height: 250px;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Éléments d'interface
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const forms = document.querySelectorAll('.form');
+    const resultsSection = document.getElementById('results-section');
+    const newInvestmentResults = document.getElementById('new-investment-results');
+    const portfolioResults = document.getElementById('portfolio-results');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    // Configuration initiale
+    let currentMode = 'new-investment';
+    hideResults();
+
+    // Gestion du sélecteur de mode
+    modeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            currentMode = this.dataset.mode;
+            modeButtons.forEach(btn => btn.classList.remove('active'));
+            forms.forEach(form => form.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(`${currentMode}-form`).classList.add('active');
+            hideResults();
+        });
+    });
+
+    // Fonctions utilitaires
+    function showLoading() {
+        loadingIndicator.style.display = 'block';
+        errorMessage.style.display = 'none';
+        resultsSection.style.display = 'none';
+    }
+
+    function hideLoading() {
+        loadingIndicator.style.display = 'none';
+    }
+
+    function showError(message) {
+        errorText.textContent = message;
+        errorMessage.style.display = 'block';
+        hideLoading();
+    }
+
+    function hideResults() {
+        resultsSection.style.display = 'none';
+        errorMessage.style.display = 'none';
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', { 
+            style: 'currency', 
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    function formatPercentage(value) {
+        return `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
+    }
+
+    function formatCompactNumber(value) {
+        if (value >= 1e12) {
+            return `${(value / 1e12).toFixed(2)}T`;
+        } else if (value >= 1e9) {
+            return `${(value / 1e9).toFixed(2)}B`;
+        } else if (value >= 1e6) {
+            return `${(value / 1e6).toFixed(2)}M`;
+        } else if (value >= 1e3) {
+            return `${(value / 1e3).toFixed(2)}K`;
+        } else {
+            return value.toFixed(2);
+        }
+    }
+
+    // Configuration du graphique
+    const ctx = document.getElementById('forecast-chart').getContext('2d');
+    const forecastChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Historical',
+                    data: [],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    fill: false,
+                    tension: 0.1
+                },
+                {
+                    label: 'Forecast',
+                    data: [],
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    fill: false,
+                    tension: 0.1,
+                    borderDash: [5, 5]
+                },
+                {
+                    label: 'Upper Interval',
+                    data: [],
+                    borderColor: 'rgba(0, 123, 255, 0)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    fill: '+1',
+                    tension: 0.1
+                },
+                {
+                    label: 'Lower Interval',
+                    data: [],
+                    borderColor: 'rgba(0, 123, 255, 0)',
+                    backgroundColor: 'rgba(0, 123, 255, 0)',
+                    fill: false,
+                    tension: 0.1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM d'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Price (USD)',
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#ffffff'
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD'
+                                }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Fonctionnalité de recherche d'actifs
+    function setupAssetSearch(inputId, suggestionsId) {
+        const input = document.getElementById(inputId);
+        const suggestions = document.getElementById(suggestionsId);
+
+        input.addEventListener('input', async function() {
+            const query = this.value.trim();
+            if (query.length < 2) {
+                suggestions.classList.remove('active');
+                suggestions.innerHTML = '';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/simulator/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                
+                // Vérifier si l'API a retourné une erreur
+                if (data.error) {
+                    console.error('API error:', data.error);
+                    suggestions.classList.remove('active');
+                    return;
+                }
+                
+                suggestions.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.classList.add('suggestion-item');
+                        div.textContent = `${item.name} (${item.symbol})`;
+                        div.dataset.symbol = item.symbol;
+                        div.dataset.name = item.name;
+                        div.dataset.type = item.type;
+                        div.addEventListener('click', function() {
+                            input.value = `${item.name} (${item.symbol})`;
+                            input.dataset.symbol = item.symbol;
+                            input.dataset.name = item.name;
+                            input.dataset.type = item.type;
+                            suggestions.classList.remove('active');
+                        });
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.classList.add('active');
+                } else {
+                    suggestions.classList.remove('active');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la recherche d\'actifs:', error);
+                suggestions.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.remove('active');
+            }
+        });
+    }
+
+    setupAssetSearch('asset-search', 'asset-suggestions');
+    setupAssetSearch('asset-search-portfolio', 'asset-suggestions-portfolio');
+
+    // Gestion des soumissions de formulaire
+    document.getElementById('new-investment-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Récupérer les valeurs du formulaire
+        const assetInput = document.getElementById('asset-search');
+        const symbol = assetInput.dataset.symbol;
+        const assetName = assetInput.dataset.name;
+        const assetType = assetInput.dataset.type || 'crypto';
+        const amount = parseFloat(document.getElementById('investment-amount').value);
+        const horizon = parseInt(document.getElementById('horizon').value);
+        const riskLevel = document.getElementById('risk-level').value;
+
+        // Validation de base
+        if (!symbol) {
+            showError('Please select an asset from the suggestions.');
+            return;
+        }
+
+        if (isNaN(amount) || amount <= 0) {
+            showError('Please enter a valid investment amount.');
+            return;
+        }
+
+        if (isNaN(horizon) || horizon <= 0 || horizon > 180) {
+            showError('Please enter a valid horizon (1-180 days).');
+            return;
+        }
+
+        // Afficher le chargement et masquer les messages d'erreur
+        showLoading();
+
+        try {
+            // Appel API
+            const response = await fetch('/api/simulator/new-investment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    symbol: symbol, 
+                    amount: amount, 
+                    horizon: horizon, 
+                    risk_level: riskLevel, 
+                    asset_type: assetType 
+                })
+            });
+
+            // Vérifier la réponse
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'An error occurred during the simulation.');
+            }
+
+            // Traiter les résultats
+            const result = await response.json();
+            
+            // Afficher les résultats
+            displayResults(result, 'new-investment');
+            hideLoading();
+        } catch (error) {
+            console.error('Erreur lors de la simulation:', error);
+            showError(error.message || 'An error occurred during the simulation.');
+        }
+    });
+
+    document.getElementById('portfolio-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Récupérer les valeurs du formulaire
+        const assetInput = document.getElementById('asset-search-portfolio');
+        const symbol = assetInput.dataset.symbol;
+        const assetName = assetInput.dataset.name;
+        const assetType = assetInput.dataset.type || 'crypto';
+        const quantity = parseFloat(document.getElementById('quantity').value);
+        const avgPurchasePrice = parseFloat(document.getElementById('avg-purchase-price').value);
+        const horizon = parseInt(document.getElementById('horizon-portfolio').value);
+
+        // Validation de base
+        if (!symbol) {
+            showError('Please select an asset from the suggestions.');
+            return;
+        }
+
+        if (isNaN(quantity) || quantity <= 0) {
+            showError('Please enter a valid quantity.');
+            return;
+        }
+
+        if (isNaN(avgPurchasePrice) || avgPurchasePrice <= 0) {
+            showError('Please enter a valid average purchase price.');
+            return;
+        }
+
+        if (isNaN(horizon) || horizon <= 0 || horizon > 180) {
+            showError('Please enter a valid horizon (1-180 days).');
+            return;
+        }
+
+        // Afficher le chargement et masquer les messages d'erreur
+        showLoading();
+
+        try {
+            // Appel API
+            const response = await fetch('/api/simulator/analyze-position', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    symbol: symbol, 
+                    quantity: quantity, 
+                    avg_purchase_price: avgPurchasePrice, 
+                    horizon: horizon, 
+                    asset_type: assetType 
+                })
+            });
+
+            // Vérifier la réponse
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'An error occurred during the analysis.');
+            }
+
+            // Traiter les résultats
+            const result = await response.json();
+            
+            // Afficher les résultats
+            displayResults(result, 'portfolio');
+            hideLoading();
+        } catch (error) {
+            console.error('Erreur lors de l\'analyse de la position:', error);
+            showError(error.message || 'An error occurred during the analysis.');
+        }
+    });
+
+    // Affichage des résultats
+    function displayResults(result, mode) {
+        // Afficher la section des résultats
+        resultsSection.style.display = 'block';
+        
+        // Masquer les deux modes et afficher seulement celui demandé
+        newInvestmentResults.style.display = 'none';
+        portfolioResults.style.display = 'none';
+        
+        if (mode === 'new-investment') {
+            newInvestmentResults.style.display = 'block';
+        } else {
+            portfolioResults.style.display = 'block';
+        }
+
+        // Informations sur l'actif (communes aux deux modes)
+        document.getElementById('asset-name').textContent = `${result.asset.name} (${result.asset.symbol})`;
+        document.getElementById('current-price').textContent = formatCurrency(result.asset.current_price);
+        
+        // Change 24h
+        const change24h = document.getElementById('change-24h');
+        change24h.textContent = formatPercentage(result.asset.change_24h);
+        change24h.classList.remove('positive', 'negative');
+        change24h.classList.add(result.asset.change_24h >= 0 ? 'positive' : 'negative');
+        
+        // Volume et market cap
+        document.getElementById('volume-24h').textContent = formatCompactNumber(result.asset.volume) + ' $';
+        document.getElementById('market-cap').textContent = formatCompactNumber(result.asset.market_cap) + ' $';
+
+        // Mise à jour du graphique
+        updateChart(result.forecast.prices);
+
+        // Informations spécifiques au mode
+        if (mode === 'new-investment') {
+            displayNewInvestmentResults(result);
+        } else {
+            displayPortfolioResults(result);
+        }
+
+        // Afficher la recommandation
+        displayRecommendation(result.recommendation);
+    }
+    
+    // Mise à jour du graphique
+    function updateChart(forecastPrices) {
+        // Conversion des dates en objets Date
+        const currentDate = new Date();
+        const datePrices = forecastPrices.map(p => ({
+            x: new Date(p.Date),
+            y: p['Prix prédit']
+        }));
+        
+        const historicalPrices = datePrices.filter(p => p.x <= currentDate);
+        const futurePrices = datePrices;
+        
+        // Création des données pour l'intervalle de confiance
+        const upperInterval = forecastPrices.map(p => ({
+            x: new Date(p.Date),
+            y: p['Intervalle haut']
+        }));
+        
+        const lowerInterval = forecastPrices.map(p => ({
+            x: new Date(p.Date),
+            y: p['Intervalle bas']
+        }));
+        
+        // Mise à jour des datasets
+        forecastChart.data.datasets[0].data = historicalPrices;
+        forecastChart.data.datasets[1].data = futurePrices;
+        forecastChart.data.datasets[2].data = upperInterval;
+        forecastChart.data.datasets[3].data = lowerInterval;
+        
+        // Mise à jour du graphique
+        forecastChart.update();
+    }
+    
+    // Affichage des résultats d'un nouvel investissement
+    function displayNewInvestmentResults(result) {
+        // Investissement
+        const investment = result.investment;
+        
+        // Quantité acquise
+        document.getElementById('investment-quantity').textContent = investment.quantity.toFixed(5);
+        
+        // Montant investi
+        document.getElementById('investment-amount-display').textContent = formatCurrency(investment.amount);
+        
+        // Valeur future estimée
+        document.getElementById('investment-future-value').textContent = formatCurrency(investment.future_value);
+        
+        // Rendement attendu
+        const returnElement = document.getElementById('investment-return');
+        returnElement.textContent = formatPercentage(investment.expected_return);
+        returnElement.classList.remove('positive', 'negative');
+        returnElement.classList.add(investment.expected_return >= 0 ? 'positive' : 'negative');
+        
+        // Fiabilité de la prédiction
+        document.getElementById('investment-reliability').textContent = `${investment.reliability}%`;
+        
+        // Date optimale d'achat
+        document.getElementById('investment-optimal-date').textContent = 
+            investment.optimal_entry.days_to_wait > 0 
+                ? investment.optimal_entry.date 
+                : 'Now';
+    }
+    
+    // Affichage des résultats pour le portfolio
+    function displayPortfolioResults(result) {
+        // Position du portfolio
+        const position = result.position;
+        
+        // Quantité détenue
+        document.getElementById('position-quantity').textContent = position.quantity.toFixed(5);
+        
+        // Prix d'achat moyen
+        document.getElementById('position-avg-price').textContent = formatCurrency(position.avg_purchase_price);
+        
+        // Valeur initiale
+        document.getElementById('position-initial-value').textContent = formatCurrency(position.initial_value);
+        
+        // Valeur actuelle
+        document.getElementById('position-current-value').textContent = formatCurrency(position.current_value);
+        
+        // Performance actuelle
+        const currentReturnElement = document.getElementById('position-current-return');
+        currentReturnElement.textContent = formatPercentage(position.current_return);
+        currentReturnElement.classList.remove('positive', 'negative');
+        currentReturnElement.classList.add(position.current_return >= 0 ? 'positive' : 'negative');
+        
+        // Valeur future
+        document.getElementById('position-future-value').textContent = formatCurrency(position.future_value);
+        
+        // Fiabilité de la prédiction
+        document.getElementById('position-reliability').textContent = `${result.forecast.reliability}%`;
+    }
+    
+    // Affichage de la recommandation
+    function displayRecommendation(recommendation) {
+        const recoType = document.getElementById('recommendation-type');
+        recoType.textContent = recommendation.type;
+        recoType.className = 'recommendation-type';
+        
+        // Ajouter la classe CSS correspondant au type de recommandation (en minuscules)
+        const recoClass = recommendation.type.toLowerCase();
+        recoType.classList.add(recoClass);
+        
+        // Explication
+        document.getElementById('recommendation-explanation').textContent = recommendation.explanation;
+    }
+});
+</script>

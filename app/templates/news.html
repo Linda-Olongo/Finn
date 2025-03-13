@@ -1,15 +1,14 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="news-container">
-    <!-- Header compact pour mobile -->
-    <div class="mobile-header">
-        <!-- Supprimez l'ID floatingMenuBtn qui entre en conflit avec celui de base.html -->
-        <button type="button" class="floating-menu-btn news-menu-btn" aria-label="Open Menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Flèche de retour pour mobile -->
+    <div class="back-arrow-container">
+        <a href="/chat" class="back-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#000"/>
             </svg>
-        </button>
-        <h1 class="mobile-header-title">News</h1>
+        </a>
     </div>
 
     <!-- En-tête centré (visible sur desktop et mobile, mais ajusté sur mobile) -->
@@ -111,9 +110,9 @@
 <style>
 /* STYLE DU FICHIER NEWS - Corrigé pour correspondre exactement aux captures d'écran */
 .news-container {
-    max-width: 800px;
+    max-width: 900px; /* Aligné avec simulation.html */
     margin: 0 auto;
-    padding: 40px 30px;
+    padding: 40px; /* Aligné avec simulation.html (desktop) */
     min-height: 100vh;
     background-color: var(--content-bg);
     width: 100%;
@@ -141,57 +140,37 @@
     background-color: transparent;
 }
 
-/* Header compact pour mobile */
-.mobile-header {
+/* Conteneur de la flèche de retour */
+.back-arrow-container {
     display: none; /* Caché par défaut (visible uniquement sur mobile) */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 56px; /* Hauteur du header */
-    background-color: var(--content-bg);
-    border-bottom: 1px solid var(--border-color);
-    z-index: 200;
+    position: relative; /* Changé de absolute à relative pour coulisser avec le contenu */
+    margin-bottom: 16px; /* Réduit l'espace pour un alignement naturel */
     align-items: center;
-    padding: 0 10px;
 }
 
-/* Style spécifique pour le bouton hamburger dans le header News */
-.news-menu-btn {
-    position: static; /* Retirer le positionnement fixe */
-    background-color: var(--content-bg);
-    border: none;
-    border-radius: 6px;
-    padding: 8px;
-    cursor: pointer;
-    z-index: 250; /* Plus élevé que les autres éléments */
+.back-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--nav-bg);
+    border-radius: 50%;
+    transition: background-color 0.3s;
 }
 
-/* Ajustement pour le mode sidebar cachée */
-body.sidebar-hidden .mobile-header {
-    left: 0; /* Assure que le header prend toute la largeur */
+.back-arrow:hover {
+    background-color: var(--nav-hover);
 }
 
-.mobile-header-title {
-    flex: 1;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--content-text);
-    margin: 0;
+.back-arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: var(--text-color);
 }
 
-/* Ajustement du bouton hamburger dans le header */
-.mobile-header .floating-menu-btn {
-    position: static; /* Retirer le positionnement fixe */
-    background-color: var(--content-bg);
-    border: none;
-    border-radius: 6px;
-    padding: 8px;
-    cursor: pointer;
-}
-
-/* Header centré (desktop et mobile) */
+/* En-tête centré (desktop et mobile) */
 .header-center {
     text-align: center;
     margin-bottom: 40px;
@@ -361,9 +340,9 @@ body.sidebar-hidden .mobile-header {
 .read-more {
     display: inline-flex;
     align-items: center;
-    color: var(--content-text); /* Noir à l'état normal */
+    color: var(--content-text);
     font-size: 14px;
-    text-decoration: none; /* Pas de soulignement par défaut */
+    text-decoration: none;
     font-weight: 500;
     padding: 6px 12px;
     border-radius: 6px;
@@ -375,8 +354,8 @@ body.sidebar-hidden .mobile-header {
 }
 
 .read-more:hover {
-    color: var(--content-text); /* Garder la couleur noire au survol */
-    background-color: #e0e0e0; /* Fond gris au survol, comme sur desktop */
+    color: var(--content-text);
+    background-color: #e0e0e0;
 }
 
 /* Message d'erreur ou d'information */
@@ -393,42 +372,42 @@ body.sidebar-hidden .mobile-header {
 /* Responsive design - ajusté pour correspondre à l'affichage mobile */
 @media (max-width: 768px) {
     .news-container {
-        padding: 15px;
-        padding-top: 70px; /* Ajouter un padding-top pour passer sous le mobile-header */
+        padding: 16px; /* Aligné avec simulation.html (mobile) */
+        padding-top: 0; /* Supprime le padding-top excessif */
     }
 
-    /* Masquer le bouton hamburger global sur mobile */
-    #floatingMenuBtn {
-        display: none !important; 
+    /* Afficher la flèche de retour au lieu du header "News" */
+    .back-arrow-container {
+        display: flex;
     }
-    
+
     .mobile-header {
-        display: flex; /* Afficher le header compact sur mobile */
+        display: none; /* Supprimer le header "News" sur mobile */
     }
 
-    /* Ajuster le header-center pour qu'il apparaisse sous le mobile-header */
+    /* Ajuster le header-center pour qu'il apparaisse sous la flèche de retour */
     .header-center {
-        margin-top: 20px; /* Ajouter un espace pour ne pas être trop collé au mobile-header */
+        margin-top: 0; /* Supprime l'espace excessif */
     }
 
     .header-center h1 {
-        font-size: 28px; /* Réduire légèrement la taille sur mobile */
+        font-size: 28px;
     }
     
     .header-center .subtitle {
         font-size: 14px;
-        max-width: 90%; /* Réduire les marges gauche et droite en prenant 90% de la largeur */
+        max-width: 90%;
         margin: 0 auto;
     }
 
     /* Réduire la largeur de la barre de recherche sur mobile */
     .search-container {
-        max-width: 90%; /* Réduire la largeur à 90% de l'écran */
+        max-width: 90%;
     }
 
     /* Réduire les marges gauche et droite pour category-description */
     .category-description {
-        max-width: 90%; /* Réduire les marges gauche et droite en prenant 90% de la largeur */
+        max-width: 90%;
         margin: 0 auto;
     }
     
@@ -449,7 +428,7 @@ body.sidebar-hidden .mobile-header {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Cibler le bouton hamburger dans le header News
+        // Cibler le bouton hamburger dans le header News (non utilisé ici, mais conservé pour compatibilité)
         const newsMenuBtn = document.querySelector('.news-menu-btn');
         
         if (newsMenuBtn) {
@@ -482,5 +461,5 @@ body.sidebar-hidden .mobile-header {
             });
         }
     });
-    </script>
+</script>
 {% endblock %}

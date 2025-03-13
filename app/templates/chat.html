@@ -45,12 +45,6 @@
         <div class="message-content">
             <p class="message-text"></p>
         </div>
-        <button class="edit-message">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-        </button>
     </div>
 </template>
 
@@ -59,12 +53,6 @@
         <div class="message-content">
             <p class="message-text"></p>
         </div>
-        <button class="copy-message">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-        </button>
     </div>
 </template>
 
@@ -85,55 +73,80 @@
         height: 100%;
         max-width: 800px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 0;
         background-color: var(--content-bg);
         position: relative;
-        overflow: hidden; /* Cacher le débordement */
+        overflow: hidden;
     }
 
     /* Écran de bienvenue */
     .welcome-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Déjà présent, mais on le garde pour confirmation */
-    flex: 1;
-    text-align: center;
-    padding: 20px; /* Réduire le padding pour éviter un décalage excessif */
-    min-height: 60vh; /* Assurer une hauteur minimale pour mieux répartir l'espace */
-}
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        min-height: 60vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-.welcome-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin-top: auto; /* Pousse le contenu vers le centre en haut */
-    margin-bottom: auto; /* Pousse le contenu vers le centre en bas */
-}
+    .welcome-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        width: 100%;
+        max-width: 400px;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .welcome-content .logo {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     .welcome-content .logo svg {
-        width: 56px; /* Augmentation de la taille du logo */
-        height: 56px;
+        width: 64px;
+        height: 64px;
         color: var(--text-color);
     }
 
     .welcome-content h1 {
-        font-size: 32px; /* Augmentation de la taille de "Finn 2.1 Prime" */
+        font-size: 32px;
         font-weight: 600;
         color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 100%;
     }
 
     .welcome-content h2 {
-        font-size: 14px; /* Réduction de la taille de "Financial Assistant" */
+        font-size: 16px;
         font-weight: 400;
-        color: var(--text-muted); /* Gris clair comme "Par ChatGPT" */
+        color: var(--text-muted);
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 100%;
     }
 
     .welcome-content p {
-        font-size: 14px; /* Réduction de la taille du texte */
-        color: var(--text-color); /* Noir */
-        max-width: 400px;
-        margin-top: 8px;
+        font-size: 16px;
+        color: var(--text-color);
+        margin: 10px 0 0 0;
+        padding: 0;
+        text-align: center;
+        width: 100%;
     }
 
     /* Cacher l'écran de bienvenue quand le chat est actif */
@@ -141,47 +154,56 @@
         display: none;
     }
 
+    /* Zone des messages avec marge fixe et défilement amélioré */
     .chat-messages {
         position: absolute;
         left: 0;
         right: 0;
         top: 0;
-        bottom: 0;
+        bottom: 140px; /* Espace pour la zone de saisie */
         overflow-y: auto;
-        padding: 20px;
-        padding-right: 10px; /* Laisser de la place pour la barre de défilement */
+        padding: 0 20px;
+        padding-top: 40px; /* Réduit pour remonter les messages */
+        padding-bottom: 20px;
+        scrollbar-width: none; /* Firefox */
+        z-index: 10;
+        scroll-padding-top: 40px; /* Point de départ du scroll */
     }
 
-.chat-messages::-webkit-scrollbar {
-    width: 6px; /* Largeur plus fine */
-}
+    /* S'assurer que le défilement ne dépasse pas la marge de 40px en haut */
+    .chat-messages::before {
+        content: "";
+        display: block;
+        height: 40px; /* Correspond à padding-top */
+        margin-top: -40px;
+        visibility: hidden;
+    }
 
-.chat-messages::-webkit-scrollbar-track {
-    background: transparent; /* Fond transparent */
-}
+    /* Style pour le premier message afin qu'il commence à la bonne position */
+    .chat-messages .message:first-child {
+        margin-top: 0; /* Pas de marge supplémentaire pour le premier message */
+    }
 
-.chat-messages::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2); /* Couleur plus subtile */
-    border-radius: 3px; /* Coins arrondis */
-    border: none; /* Pas de bordure */
-}
+    /* Masquer la barre de défilement */
+    .chat-messages::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+        display: none;
+    }
 
     /* Styles des messages */
-.message {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    position: relative;
-    width: 100%;
-    margin-bottom: 8px; /* Ajouter un espace entre les messages */
-}
+    .message {
+        display: flex;
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 0;
+    }
 
-    /* Modification pour les messages courts */
     .message-text {
-        white-space: pre-wrap; /* Permettre le retour à la ligne mais pas forcé */
-        word-break: break-word; /* Couper les mots trop longs si nécessaire */
-        display: inline-block; /* Pour que les messages courts restent sur une ligne */
-        min-width: 20px; /* Largeur minimale pour les très courts messages */
+        white-space: pre-wrap;
+        word-break: break-word;
+        text-align: left;
     }
 
     .message-content {
@@ -192,7 +214,6 @@
 
     /* Messages de l'utilisateur */
     .user-message {
-        align-self: flex-end;
         justify-content: flex-end;
     }
 
@@ -200,67 +221,40 @@
         background-color: #f0f0f0;
         color: var(--content-text);
         border-radius: 16px 16px 0 16px;
-        max-width: 70%; /* Limiter la largeur pour les messages utilisateur */
-        margin-left: auto; /* Pousser vers la droite */
+        max-width: 80%;
+        display: inline-block;
+        margin-left: auto;
     }
 
-        /* Messages de l'assistant */
-        .assistant-message {
-            align-self: flex-start;
-            justify-content: flex-start;
-            width: 100%;
-            margin-left: 0;
-            padding-left: 0;
-            position: relative;
-        }
+    /* Messages de l'assistant */
+    .assistant-message {
+        justify-content: flex-start;
+        max-width: 100%;
+        padding: 0;
+    }
 
-        .assistant-message .message-content {
-            background-color: transparent;
-            color: var(--content-text);
-            border-radius: 16px 16px 16px 0;
-            max-width: 90%;
-            text-align: justify;
-            margin-left: 0;
-            box-sizing: border-box;
-        }
+    .assistant-message .message-content {
+        background-color: transparent;
+        color: var(--content-text);
+        border-radius: 16px 16px 16px 0;
+        width: 100%;
+        text-align: left;
+        margin: 0;
+        padding-left: 0;
+        box-sizing: border-box;
+    }
 
-    /* Boutons d'action (edit, copy) */
+    /* Masquer les boutons d'action */
     .edit-message,
     .copy-message {
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 4px;
-        display: none;
-        position: absolute;
-    }
-
-    .user-message .edit-message {
-        right: calc(100% - 5px); /* Rapprocher l'icône du message */
-        top: 12px; /* Aligner avec le haut du message */
-    }
-
-    .assistant-message .copy-message {
-        bottom: -5px; /* Rapprocher l'icône du bas du message */
-        right: 5px;
-    }
-    .message:hover .edit-message,
-    .message:hover .copy-message {
-        display: block;
-    }
-
-    .edit-message:hover,
-    .copy-message:hover {
-        background-color: var(--nav-hover);
+        display: none !important;
     }
 
     /* Animation de "en train d'écrire" */
     .typing-indicator {
         align-self: flex-start;
+        margin-bottom: 16px;
     }
-
 
     .typing-animation {
         display: flex;
@@ -301,52 +295,55 @@
 
     /* Zone de saisie du message */
     .chat-input-container {
-        margin-top: auto;
-        padding: 10px 0;
-        position: sticky;
+        position: absolute;
         bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px 20px;
         background-color: var(--content-bg);
+        z-index: 20;
     }
 
     .chat-form {
-        margin-bottom: 10px;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
     }
 
-    /* Ajuster la zone de saisie */
-.input-wrapper {
-    display: flex;
-    flex-direction: column; /* Changer la direction en colonne pour empiler les éléments */
-    align-items: flex-end; /* Aligner le bouton à droite */
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    padding: 10px 16px;
-    min-height: 120px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e0e0e0;
-    position: relative; /* Permet de positionner le bouton en absolu si nécessaire */
-}
+    .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        padding: 10px 16px;
+        min-height: 120px;
+        max-height: 120px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0e0e0;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
 
-.chat-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 8px 16px;
-    font-size: 14px;
-    resize: none;
-    max-height: 120px;
-    line-height: 1.5;
-    outline: none;
-    width: 100%; /* S'assurer que la textarea prend toute la largeur */
-    text-align: left; /* Aligner le texte à gauche */
-    vertical-align: top; /* Aligner le texte en haut */
-    box-sizing: border-box; /* Inclure le padding dans la taille */
-}
+    .chat-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 8px 0;
+        font-size: 14px;
+        resize: none;
+        max-height: 80px;
+        line-height: 1.5;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+        align-self: flex-start;
+    }
 
     .send-button {
-        background-color: #000; /* Fond noir circulaire */
+        background-color: #000;
         border: none;
         border-radius: 50%;
         padding: 8px;
@@ -356,13 +353,12 @@
         justify-content: center;
         width: 32px;
         height: 32px;
+        position: absolute;
+        bottom: 10px;
+        right: 16px;
     }
 
     .send-button svg {
-        color: #fff; /* Flèche blanche */
-    }
-
-    .send-button:hover svg {
         color: #fff;
     }
 
@@ -375,111 +371,177 @@
 
     /* Style de l'icône de suppression */
     .delete-conversation {
-        background: none; /* Supprimer le fond */
+        background: none;
         border: none;
         color: var(--text-muted);
         cursor: pointer;
         padding: 4px;
-        opacity: 0.7; /* Rendre l'icône plus subtile */
+        opacity: 0.7;
         transition: opacity 0.2s;
     }
 
     .delete-conversation:hover {
-        opacity: 1; /* Plus visible au survol */
-        background: none; /* Assurer qu'il n'y a pas de fond même au survol */
+        opacity: 1;
+        background: none;
     }
 
     /* Ajustements pour le responsive */
-@media (max-width: 768px) {
-    .welcome-screen {
-        padding: 10px; /* Déjà présent */
-        min-height: 70vh; /* Augmenter la hauteur minimale pour mieux centrer */
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Centrage vertical */
-        align-items: center;
-    }
-
-    .welcome-content {
-        gap: 6px; /* Déjà présent */
-        margin-top: auto; /* Pousse le contenu vers le centre */
-        margin-bottom: auto; /* Pousse le contenu vers le centre */
-    }
-
-    .welcome-content h1 {
-        font-size: 28px; /* Déjà présent */
-    }
-
-    .welcome-content h2 {
-        font-size: 12px; /* Déjà présent */
-    }
-
-    .welcome-content p {
-        font-size: 12px; /* Déjà présent */
-    }
-
-    .welcome-content .logo svg {
-        width: 48px; /* Déjà présent */
-        height: 48px;
-    }
-}
-
-@media (max-width: 480px) {
-    .welcome-screen {
-        padding: 5px; /* Déjà présent */
-        min-height: 75vh; /* Ajuster encore plus pour les très petits écrans */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .welcome-content {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-
-    .welcome-content h1 {
-        font-size: 24px; /* Déjà présent */
-    }
-
-    .welcome-content h2 {
-        font-size: 10px; /* Déjà présent */
-    }
-
-    .welcome-content p {
-        font-size: 10px; /* Déjà présent */
-    }
-
-    .welcome-content .logo svg {
-        width: 40px; /* Déjà présent */
-        height: 40px;
-    }
-
-    /* Ajuster la zone de saisie pour qu'elle ne gêne pas le centrage */
-    .chat-input-container {
-        padding: 5px 0; /* Réduire le padding pour équilibrer l'espace */
-    }
-}
-
-/* S'assurer que la hauteur prend en compte les barres de navigation */
-@supports (height: 100dvh) {
-    .welcome-screen {
-        min-height: 60dvh; /* Utiliser dvh pour dynamic viewport height */
-    }
-
     @media (max-width: 768px) {
+        .chat-container {
+            padding: 0;
+        }
+        
         .welcome-screen {
-            min-height: 70dvh; /* Ajuster pour mobile */
+            padding: 10px;
+            min-height: 70vh;
+        }
+
+        .welcome-content {
+            gap: 12px;
+        }
+
+        .welcome-content .logo svg {
+            width: 56px;
+            height: 56px;
+        }
+
+        .welcome-content h1 {
+            font-size: 28px;
+        }
+
+        .welcome-content h2 {
+            font-size: 14px;
+        }
+        
+        .welcome-content p {
+            font-size: 14px;
+        }
+
+        /* Ajustements pour chat-messages sur mobile */
+        .chat-messages {
+            bottom: 130px;
+            padding-top: 50px; /* Réduit à 50px pour remonter les messages */
+            scroll-padding-top: 50px; /* Ajuster le point de départ du scroll */
+            margin-top: 50px; /* Réduit à 50px pour aligner avec le menu */
+        }
+        
+        .chat-messages::before {
+            height: 50px;
+            margin-top: -50px;
+        }
+        
+        .chat-messages .message:first-child {
+            margin-top: 0; /* Pas de marge supplémentaire */
+        }
+        
+        .assistant-message .message-content {
+            padding-left: 0;
+        }
+        
+        .input-wrapper {
+            min-height: 120px !important;
+            padding: 8px 12px;
+        }
+        
+        .send-button {
+            width: 28px;
+            height: 28px;
+            padding: 6px;
+        }
+        
+        .chat-input {
+            max-height: 70px;
         }
     }
 
     @media (max-width: 480px) {
         .welcome-screen {
-            min-height: 75dvh; /* Ajuster pour très petits écrans */
+            padding: 5px;
+            min-height: 75vh;
+        }
+
+        .welcome-content {
+            gap: 8px;
+        }
+        
+        .welcome-content .logo svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        .welcome-content h1 {
+            font-size: 24px;
+        }
+
+        .welcome-content h2 {
+            font-size: 12px;
+        }
+        
+        .welcome-content p {
+            font-size: 12px;
+        }
+
+        /* Ajustements pour les très petits écrans */
+        .chat-messages {
+            padding-top: 50px; /* Réduit à 50px pour remonter les messages */
+            scroll-padding-top: 50px;
+            bottom: 110px;
+            margin-top: 50px; /* Réduit à 50px pour aligner avec le menu */
+        }
+        
+        .chat-messages::before {
+            height: 50px;
+            margin-top: -50px;
+        }
+        
+        .chat-messages .message:first-child {
+            margin-top: 0;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+        }
+        
+        .message-content {
+            padding: 8px 12px;
+        }
+
+        .chat-input-container {
+            padding: 8px;
+        }
+        
+        .input-wrapper {
+            min-height: 80px !important;
+            max-height: 80px;
+            padding: 6px 10px;
+        }
+        
+        .send-button {
+            width: 28px;
+            height: 28px;
+            bottom: 8px;
+            right: 12px;
         }
     }
-}
+
+    /* S'assurer que la hauteur prend en compte les barres de navigation */
+    @supports (height: 100dvh) {
+        .welcome-screen {
+            min-height: 60dvh;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-screen {
+                min-height: 70dvh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-screen {
+                min-height: 75dvh;
+            }
+        }
+    }
 </style>
 
 <script>
@@ -490,6 +552,7 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const chatContainer = document.querySelector('.chat-container');
         const conversationId = chatContainer.dataset.conversationId || '';
+        let isScrolling = false;
 
         // Définir le mode initial (welcome ou chat)
         function setInitialMode() {
@@ -529,7 +592,8 @@
         // Ajustement automatique de la hauteur du textarea
         messageInput.addEventListener('input', function() {
             this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            const maxHeight = window.innerWidth <= 480 ? 50 : 120;
+            this.style.height = Math.min(this.scrollHeight, maxHeight) + 'px';
         });
 
         // Fonction pour charger les conversations récentes
@@ -551,16 +615,13 @@
                 return response.json();
             })
             .then(conversations => {
-                // Vider le conteneur actuel
                 recentConversationsContainer.innerHTML = '';
                 
-                // Parcourir chaque conversation et l'ajouter à la liste
                 Object.entries(conversations).forEach(([convId, conv]) => {
                     const convElement = document.createElement('div');
                     convElement.className = 'nav-item conversation-item';
                     convElement.dataset.conversationId = convId;
                     
-                    // Vérifier si c'est la conversation active
                     const currentConvId = document.querySelector('.chat-container')?.dataset.conversationId;
                     const isActive = currentConvId === convId;
                     
@@ -583,7 +644,6 @@
                     
                     recentConversationsContainer.appendChild(convElement);
                     
-                    // Ajouter un écouteur d'événement pour le bouton de suppression
                     const deleteBtn = convElement.querySelector('.delete-conversation');
                     if (deleteBtn) {
                         deleteBtn.addEventListener('click', function(e) {
@@ -606,11 +666,10 @@
             });
         }
 
-        // New Chat button handler - Modify in base.html
+        // New Chat button handler
         const newChatBtn = document.getElementById('newChatBtn');
         if (newChatBtn) {
             newChatBtn.addEventListener('click', function() {
-                // Just redirect to the chat page without creating a new conversation
                 window.location.href = '/chat';
             });
         }
@@ -661,7 +720,6 @@
                         }
                     }
                     
-                    // Mettre à jour la liste des conversations récentes
                     loadRecentConversations();
                 })
                 .catch(error => {
@@ -680,17 +738,6 @@
             messageElement.querySelector('.message-text').textContent = message;
             chatMessages.appendChild(messageElement);
 
-            const editButton = chatMessages.lastElementChild.querySelector('.edit-message');
-            if (editButton) {
-                editButton.addEventListener('click', function() {
-                    messageInput.value = message;
-                    messageInput.focus();
-                    messageInput.style.height = 'auto';
-                    messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
-                    scrollToBottom();
-                });
-            }
-
             scrollToBottom();
         }
 
@@ -701,23 +748,6 @@
 
             messageElement.querySelector('.message-text').textContent = message;
             chatMessages.appendChild(messageElement);
-
-            const copyButton = chatMessages.lastElementChild.querySelector('.copy-message');
-            if (copyButton) {
-                copyButton.addEventListener('click', function() {
-                    navigator.clipboard.writeText(message)
-                        .then(() => {
-                            const originalHTML = this.innerHTML;
-                            this.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                            setTimeout(() => {
-                                this.innerHTML = originalHTML;
-                            }, 2000);
-                        })
-                        .catch(err => {
-                            console.error('Could not copy text: ', err);
-                        });
-                });
-            }
 
             scrollToBottom();
         }
@@ -733,10 +763,84 @@
             return chatMessages.lastElementChild;
         }
 
-        // Fonction pour scroller vers le bas
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Calculer la marge supérieure en fonction de la taille de l'écran
+        function getTopMargin() {
+            if (window.innerWidth <= 480) {
+                return 50; // Très petits écrans
+            } else if (window.innerWidth <= 768) {
+                return 50; // Tablettes et mobiles moyens
+            } else {
+                return 40; // Desktop
+            }
         }
+
+        // Fonction améliorée pour le défilement
+        function scrollToBottom() {
+            if (isScrolling) return;
+            
+            isScrolling = true;
+            
+            const topMargin = getTopMargin();
+            const scrollTarget = chatMessages.scrollHeight - chatMessages.clientHeight;
+            
+            requestAnimationFrame(() => {
+                chatMessages.scrollTop = scrollTarget;
+                
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 50);
+            });
+        }
+
+        // Empêcher le défilement au-delà de la marge supérieure
+        chatMessages.addEventListener('scroll', function() {
+            const topMargin = getTopMargin();
+            
+            if (chatMessages.scrollTop < topMargin) {
+                chatMessages.scrollTop = topMargin; // Bloquer le défilement au-delà de la marge
+            }
+        });
+
+        // Observer les nouveaux messages pour maintenir le défilement
+        function setupScrollObserver() {
+            const observer = new MutationObserver(mutations => {
+                let shouldScroll = false;
+                
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        shouldScroll = true;
+                    }
+                });
+                
+                if (shouldScroll) {
+                    scrollToBottom();
+                }
+            });
+            
+            observer.observe(chatMessages, { 
+                childList: true,
+                subtree: true
+            });
+            
+            return observer;
+        }
+
+        // Gérer le défilement lors de l'interaction de l'utilisateur
+        chatMessages.addEventListener('scroll', function() {
+            const isNearBottom = (chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight) < 100;
+            
+            if (isNearBottom) {
+                scrollToBottom();
+            }
+        });
+
+        // Assurer que le défilement est maintenu lors du redimensionnement
+        window.addEventListener('resize', function() {
+            setTimeout(scrollToBottom, 100);
+        });
+
+        // Initialiser l'observateur de défilement
+        const scrollObserver = setupScrollObserver();
 
         // Permettre l'envoi avec Entrée, mais Shift+Entrée pour nouvelle ligne
         messageInput.addEventListener('keydown', function(e) {
