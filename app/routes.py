@@ -100,6 +100,32 @@ def welcome_redirect(token):
         return redirect(url_for('main.show_connexion'))
     except jwt.InvalidTokenError:
         return redirect(url_for('main.show_connexion'))
+    
+# Fonction pour afficher les conversations recentes
+def get_user_conversations(user_id):
+    """Récupère les conversations récentes d'un utilisateur."""
+    recent_conversations = {}
+    user_conversations = conversations_col.find(
+        {"user_id": user_id, "messages": {"$exists": True, "$not": {"$size": 0}}}, 
+        {"title": 1, "created_at": 1}
+    ).sort("created_at", -1).limit(10)
+    
+    for conv in user_conversations:
+        created_at = conv.get('created_at')
+        if isinstance(created_at, datetime):
+            created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
+            created_at_timestamp = created_at.timestamp()
+        else:
+            created_at_str = str(created_at)
+            created_at_timestamp = 0
+            
+        recent_conversations[conv["_id"]] = {
+            "title": conv.get("title", "New Conversation"), 
+            "created_at": created_at_str,
+            "timestamp": created_at_timestamp
+        }
+    
+    return recent_conversations
 
 # Fonction pour envoyer des mails de bienvenue à la plateforme
 def send_welcome_email(to_email, first_name, user_id=None, token=None):
@@ -391,17 +417,24 @@ def logout():
 def chat(conversation_id=None):
     token = request.args.get('token')
     response = None
+    
+    # Gérer le token dans l'URL (cas de connexion via Google)
     if token:
         response = make_response(redirect(url_for('main.chat')))
         response.set_cookie('finnToken', token, httponly=True, max_age=30*24*60*60)
         return response
+    
+    # Vérifier le token dans les cookies
     token = request.cookies.get('finnToken')
     if not token:
         return redirect(url_for('main.show_connexion'))
+    
     try:
+        # Décoder le token et vérifier l'utilisateur
         data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
         user_id = data['user_id']
         current_user = users_col.find_one({"_id": user_id})
+        
         if not current_user:
             response = make_response(redirect(url_for('main.show_connexion')))
             response.delete_cookie('finnToken')
@@ -410,14 +443,26 @@ def chat(conversation_id=None):
         response = make_response(redirect(url_for('main.show_connexion')))
         response.delete_cookie('finnToken')
         return response
+    
+    # Vérifier l'accès à la conversation spécifique
     if conversation_id:
         conversation = conversations_col.find_one({"_id": conversation_id, "user_id": user_id})
         if not conversation:
             return redirect(url_for('main.chat'))
+    
+    # Récupérer les conversations récentes
     recent_conversations = {}
-    user_conversations = conversations_col.find({"user_id": user_id}, {"title": 1, "created_at": 1}).sort("created_at", -1).limit(10)
+    user_conversations = conversations_col.find(
+        {"user_id": user_id, "messages": {"$exists": True, "$not": {"$size": 0}}}, 
+        {"title": 1, "created_at": 1}
+    ).sort("created_at", -1).limit(10)
+    
     for conv in user_conversations:
-        recent_conversations[conv["_id"]] = {"title": conv.get("title", "New Conversation"), "created_at": conv.get("created_at")}
+        recent_conversations[conv["_id"]] = {
+            "title": conv.get("title", "New Conversation"), 
+            "created_at": conv.get("created_at")
+        }
+    
     return render_template('chat.html', active_page='chat', conversation_id=conversation_id, recent_conversations=recent_conversations, current_user=current_user)
 
 @main.route('/api/chat', methods=['POST'])
@@ -427,21 +472,38 @@ def process_chat(current_user):
     message = data.get('message', '')
     conversation_id = data.get('conversation_id', '')
     user_id = current_user["_id"]
+    
+    # Vérifier si le message est vide
+    if not message.strip():
+        return jsonify({'error': 'Message cannot be empty'}), 400
+    
+    # Cas d'une nouvelle conversation
     if not conversation_id:
         conversation_id = str(uuid.uuid4())
-        new_conv = {"_id": conversation_id, "messages": [], "created_at": datetime.utcnow(), "title": "New Conversation", "user_id": user_id}
+        new_conv = {
+            "_id": conversation_id, 
+            "messages": [], 
+            "created_at": datetime.utcnow(), 
+            "title": "New Conversation", 
+            "user_id": user_id
+        }
         conversations_col.insert_one(new_conv)
+    # Cas d'une conversation existante
     else:
         conversation = conversations_col.find_one({"_id": conversation_id, "user_id": user_id})
         if not conversation:
-            return jsonify({'error': 'Accès non autorisé à cette conversation'}), 403
+            return jsonify({'error': 'Unauthorized access to this conversation'}), 403
+    
+    # Ajouter le message de l'utilisateur à la conversation
     user_message = {'role': 'user', 'content': message, 'timestamp': datetime.utcnow()}
     conversations_col.update_one({"_id": conversation_id}, {"$push": {"messages": user_message}})
+    
+    # Générer un titre pour la nouvelle conversation
     conversation = conversations_col.find_one({"_id": conversation_id})
     if len(conversation.get('messages', [])) == 1:
         try:
             title_prompt = f"Génère un titre TRÈS court (maximum 3 mots) qui résume cette requête: '{message}'"
-            title_response = claude_handler.process_query(title_prompt)  # Utiliser ClaudeHandler
+            title_response = claude_handler.process_query(title_prompt)
             title = title_response.strip()
             title = re.sub(r'^["\'«]|["\'.!?:,;»]$', '', title).strip()
             if len(title) > 30 or not title or any(title.lower() == mot for mot in ["titre", "voici", "le titre", "résumé"]):
@@ -452,22 +514,65 @@ def process_chat(current_user):
             if len(title) > 25:
                 title = title[:22]
         conversations_col.update_one({"_id": conversation_id}, {"$set": {"title": title}})
-    response = claude_handler.process_query(message)  # Utiliser ClaudeHandler
+    
+    # Traiter la réponse de l'assistant
+    response = claude_handler.process_query(message)
     assistant_message = response
     assistant_msg = {'role': 'assistant', 'content': assistant_message, 'timestamp': datetime.utcnow()}
     conversations_col.update_one({"_id": conversation_id}, {"$push": {"messages": assistant_msg}})
+    
     return jsonify({'response': assistant_message, 'conversation_id': conversation_id})
 
 @main.route('/api/conversations', methods=['GET'])
 @auth_required
 def get_conversations(current_user):
     user_id = current_user["_id"]
-    user_conversations = list(conversations_col.find({"user_id": user_id, "messages": {"$exists": True, "$not": {"$size": 0}}}, {"messages": 0}).sort("created_at", -1))
+    # Assurez-vous que le tri est explicite et cohérent
+    user_conversations = list(conversations_col.find(
+        {"user_id": user_id, "messages": {"$exists": True, "$not": {"$size": 0}}}, 
+        {"title": 1, "created_at": 1}
+    ).sort("created_at", -1))
+    
     conversations_dict = {}
     for conv in user_conversations:
         conv_id = conv["_id"]
-        conversations_dict[conv_id] = {'title': conv.get('title', 'New Conversation'), 'created_at': conv.get('created_at').strftime("%Y-%m-%d %H:%M:%S") if isinstance(conv.get('created_at'), datetime) else conv.get('created_at'), 'message_count': conv.get('message_count', 0)}
+        # Formatez la date de création de manière cohérente
+        created_at = conv.get('created_at')
+        if isinstance(created_at, datetime):
+            created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
+            created_at_timestamp = created_at.timestamp()  # Ajouter un timestamp pour le tri côté client
+        else:
+            created_at_str = str(created_at)
+            created_at_timestamp = 0
+            
+        conversations_dict[conv_id] = {
+            'title': conv.get('title', 'New Conversation'), 
+            'created_at': created_at_str,
+            'timestamp': created_at_timestamp,  # Pour trier côté client
+            'message_count': conv.get('message_count', 0)
+        }
+    
     return jsonify(conversations_dict)
+
+
+@main.route('/api/conversations/<conversation_id>/messages', methods=['GET'])
+@auth_required
+def get_conversation_messages(current_user, conversation_id):
+    """Récupère tous les messages d'une conversation spécifique."""
+    user_id = current_user["_id"]
+    conversation = conversations_col.find_one({"_id": conversation_id, "user_id": user_id})
+    
+    if not conversation:
+        return jsonify({'error': 'Conversation not found or access denied'}), 404
+    
+    messages = conversation.get('messages', [])
+    
+    # Nettoyer les données pour la sérialisation JSON
+    for msg in messages:
+        if isinstance(msg.get('timestamp'), datetime):
+            msg['timestamp'] = msg['timestamp'].strftime("%Y-%m-%d %H:%M:%S")
+    
+    return jsonify({'messages': messages})
 
 @main.route('/api/conversations/new', methods=['POST'])
 @auth_required
@@ -516,10 +621,15 @@ def news():
             response = make_response(redirect(url_for('main.show_connexion')))
             response.delete_cookie('finnToken')
             return response
+            
+        # Récupérer les conversations récentes pour afficher dans la barre latérale
+        recent_conversations = get_user_conversations(user_id)
+            
     except:
         response = make_response(redirect(url_for('main.show_connexion')))
         response.delete_cookie('finnToken')
         return response
+        
     company = request.args.get('company', None)
     categories = ['Stock Markets', 'Cryptocurrencies', 'Macroeconomics', 'Commodities', 'Financial Tech', 'Financial Regulation', 'Forex & Currencies', 'Technical Analysis']
     category = request.args.get('category', 'Stock Markets')
@@ -534,7 +644,7 @@ def news():
         news_data = []
     else:
         error_message = None
-    return render_template('news.html', active_page='news', news_data=news_data, categories=categories, current_category=category, company_name=company, view_type=view_type, error_message=error_message, current_user=current_user)
+    return render_template('news.html', active_page='news', news_data=news_data, categories=categories, current_category=category, company_name=company, view_type=view_type, error_message=error_message, current_user=current_user, recent_conversations=recent_conversations)
 
 # ROUTE POUR A SIMULATION
 @main.route('/simulator')

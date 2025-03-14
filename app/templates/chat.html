@@ -557,20 +557,7 @@
         // Définir le mode initial (welcome ou chat)
         function setInitialMode() {
             if (conversationId) {
-                fetch(`/api/conversations/${conversationId}/messages`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.messages && data.messages.length > 0) {
-                            chatContainer.classList.add('chat-active');
-                            displayMessages(data.messages);
-                        } else {
-                            chatContainer.classList.remove('chat-active');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading messages:', error);
-                        chatContainer.classList.remove('chat-active');
-                    });
+                loadConversationMessages(conversationId);
             } else {
                 chatContainer.classList.remove('chat-active');
             }
@@ -596,6 +583,73 @@
             this.style.height = Math.min(this.scrollHeight, maxHeight) + 'px';
         });
 
+        // Ajouter le gestionnaire pour le bouton de confirmation dans la modal
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                confirmDeleteConversation();
+            });
+        }
+
+        // Ajouter le gestionnaire pour le bouton d'annulation
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        if (cancelDeleteBtn) {
+            cancelDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const modal = document.getElementById('deleteConfirmModal');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+                window.currentConversationToDelete = null;
+            });
+        }
+
+        // Fonction pour charger les messages d'une conversation spécifique
+        function loadConversationMessages(conversationId) {
+            // Ajouter l'indicateur de chargement
+            chatMessages.innerHTML = '';
+            const typingIndicator = addTypingIndicator();
+            
+            fetch(`/api/conversations/${conversationId}/messages`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error loading messages');
+                }
+                return response.json();
+            })
+            .then(data => {
+                typingIndicator.remove();
+                if (data.messages && data.messages.length > 0) {
+                    chatContainer.classList.add('chat-active');
+                    displayMessages(data.messages);
+                } else {
+                    chatContainer.classList.remove('chat-active');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                typingIndicator.remove();
+                chatContainer.classList.remove('chat-active');
+                
+                // Afficher un message d'erreur à l'utilisateur
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message assistant-message';
+                errorMessage.innerHTML = `
+                    <div class="message-content">
+                        <p class="message-text">Impossible de charger les messages. Veuillez réessayer.</p>
+                    </div>
+                `;
+                chatMessages.appendChild(errorMessage);
+            });
+        }
+
         // Fonction pour charger les conversations récentes
         function loadRecentConversations() {
             const recentConversationsContainer = document.getElementById('recentConversations');
@@ -615,23 +669,33 @@
                 return response.json();
             })
             .then(conversations => {
+                // Convertir l'objet en tableau pour pouvoir le trier
+                const conversationsArray = Object.entries(conversations).map(([convId, conv]) => ({
+                    id: convId,
+                    ...conv
+                }));
+                
+                // Trier explicitement par timestamp décroissant (plus récent d'abord)
+                conversationsArray.sort((a, b) => b.timestamp - a.timestamp);
+                
                 recentConversationsContainer.innerHTML = '';
                 
-                Object.entries(conversations).forEach(([convId, conv]) => {
+                // Utiliser le tableau trié pour générer les éléments HTML
+                conversationsArray.forEach(conv => {
                     const convElement = document.createElement('div');
                     convElement.className = 'nav-item conversation-item';
-                    convElement.dataset.conversationId = convId;
+                    convElement.dataset.conversationId = conv.id;
                     
                     const currentConvId = document.querySelector('.chat-container')?.dataset.conversationId;
-                    const isActive = currentConvId === convId;
+                    const isActive = currentConvId === conv.id;
                     
                     convElement.innerHTML = `
-                        <a href="/chat/${convId}" class="nav-link conversation-link ${isActive ? 'active' : ''}">
+                        <a href="#" class="nav-link conversation-link ${isActive ? 'active' : ''}">
                             <div class="nav-content">
                                 <span class="conversation-title">${conv.title}</span>
                             </div>
                             <div class="conversation-actions">
-                                <button class="delete-conversation" data-conversation-id="${convId}">
+                                <button class="delete-conversation" data-conversation-id="${conv.id}">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M3 6h18"></path>
                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
@@ -643,6 +707,28 @@
                     `;
                     
                     recentConversationsContainer.appendChild(convElement);
+                    
+                    // Ajouter un gestionnaire d'événements pour le clic sur le lien
+                    const conversationLink = convElement.querySelector('.conversation-link');
+                    conversationLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Mettre à jour l'URL sans recharger la page
+                        const newUrl = `/chat/${conv.id}`;
+                        history.pushState({}, '', newUrl);
+                        
+                        // Mettre à jour l'ID de conversation actuelle
+                        chatContainer.dataset.conversationId = conv.id;
+                        
+                        // Mettre à jour la classe active
+                        document.querySelectorAll('.conversation-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Charger les messages de cette conversation
+                        loadConversationMessages(conv.id);
+                    });
                     
                     const deleteBtn = convElement.querySelector('.delete-conversation');
                     if (deleteBtn) {
@@ -666,16 +752,66 @@
             });
         }
 
-        // New Chat button handler
-        const newChatBtn = document.getElementById('newChatBtn');
-        if (newChatBtn) {
-            newChatBtn.addEventListener('click', function() {
-                window.location.href = '/chat';
-            });
-        }
-
         // Appeler la fonction au chargement de la page
         loadRecentConversations();
+
+        function confirmDeleteConversation() {
+        const conversationId = window.currentConversationToDelete;
+        if (!conversationId) return;
+
+        const modal = document.getElementById('deleteConfirmModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+
+        // Afficher un indicateur de chargement ou désactiver le bouton pendant la suppression
+        const deleteButton = document.querySelector(`.delete-conversation[data-conversation-id="${conversationId}"]`);
+        if (deleteButton) {
+            deleteButton.disabled = true;
+            deleteButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path d="M12 6v6l4 2"></path></svg>';
+        }
+
+        // Appeler l'API pour supprimer la conversation
+        fetch(`/api/conversations/${conversationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la suppression');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'deleted') {
+                // Supprimer l'élément de la liste sans rechargement
+                const conversationElement = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+                if (conversationElement) {
+                    conversationElement.remove();
+                }
+
+                // Si la conversation supprimée est celle actuellement affichée, retour à l'écran d'accueil
+                const currentConvId = chatContainer.dataset.conversationId;
+                if (currentConvId === conversationId) {
+                    history.pushState({}, '', '/chat');
+                    chatContainer.dataset.conversationId = '';
+                    chatContainer.classList.remove('chat-active');
+                    chatMessages.innerHTML = '';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            // Rétablir le bouton en cas d'erreur
+            if (deleteButton) {
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+            }
+        });
+    }
 
         // Soumission du formulaire
         chatForm.addEventListener('submit', function(e) {
@@ -852,7 +988,16 @@
 
         // Observer les changements d'URL pour réinitialiser le mode
         function handleURLChange() {
-            if (window.location.pathname === '/chat') {
+            const path = window.location.pathname;
+            const pathParts = path.split('/');
+            
+            if (pathParts.length >= 3 && pathParts[1] === 'chat') {
+                const newConvId = pathParts[2];
+                if (chatContainer.dataset.conversationId !== newConvId) {
+                    chatContainer.dataset.conversationId = newConvId;
+                    loadConversationMessages(newConvId);
+                }
+            } else if (path === '/chat') {
                 chatContainer.dataset.conversationId = '';
                 chatContainer.classList.remove('chat-active');
                 chatMessages.innerHTML = '';
