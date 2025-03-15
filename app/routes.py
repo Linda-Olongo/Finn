@@ -648,6 +648,47 @@ def news():
 
 # ROUTE POUR A SIMULATION
 @main.route('/simulator')
+def simulator():
+    # Vérification de l'authentification
+    token = request.cookies.get('finnToken')
+    if not token:
+        logger.info("Tentative d'accès à la simulation sans token")
+        return redirect(url_for('main.show_connexion'))
+    
+    try:
+        # Décodage du token et récupération des informations utilisateur
+        data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user_id = data['user_id']
+        current_user = users_col.find_one({"_id": user_id})
+        
+        if not current_user:
+            logger.warning(f"Utilisateur avec ID {user_id} non trouvé dans la base de données")
+            response = make_response(redirect(url_for('main.show_connexion')))
+            response.delete_cookie('finnToken')
+            return response
+        
+        # Récupérer les conversations récentes pour afficher dans la barre latérale
+        recent_conversations = get_user_conversations(user_id)
+        
+        logger.info(f"Chargement du simulateur pour l'utilisateur {user_id}")
+        return render_template('simulation.html', active_page='simulator', current_user=current_user, recent_conversations=recent_conversations)
+        
+    except jwt.ExpiredSignatureError:
+        logger.warning("Token expiré lors de l'accès au simulateur")
+        response = make_response(redirect(url_for('main.show_connexion')))
+        response.delete_cookie('finnToken')
+        return response
+    except jwt.InvalidTokenError:
+        logger.warning("Token invalide lors de l'accès au simulateur")
+        response = make_response(redirect(url_for('main.show_connexion')))
+        response.delete_cookie('finnToken')
+        return response
+    except Exception as e:
+        logger.error(f"Erreur inattendue lors de l'accès au simulateur: {str(e)}")
+        response = make_response(redirect(url_for('main.show_connexion')))
+        response.delete_cookie('finnToken')
+        return response
+
 
 def simulator():
 

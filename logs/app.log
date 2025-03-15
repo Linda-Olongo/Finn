@@ -70,3 +70,164 @@ Je traduis cette requête comme une demande de visualisation car le verbe "Visua
 2025-03-15 09:55:56,623 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=67650', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/rnn3pi11.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/mesdxyd6.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/prophet_modela6txesa_/prophet_model-20250315095556.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
 2025-03-15 09:55:56,623 - INFO - Chain [1] start processing
 2025-03-15 09:55:56,762 - INFO - Chain [1] done processing
+2025-03-15 11:35:06,171 - ERROR - Échec du parsing JSON: {
+    "intent": "price",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+Je justifie cette analyse :
+- Intent = "price" car l'utilisateur demande clairement le prix actuel avec "aujourd'hui"
+- Assets = ["BTC"] car Bitcoin est explicitement mentionné 
+- Asset_type = "crypto" car BTC est une cryptomonnaie
+- Timeframe = 30 (valeur par défaut car non spécifié)
+- Price_timeframes = ["current"] car "aujourd'hui" indique le prix actuel
+- Language = "fr" car la question est en français
+
+La requête est simple et directe, demandant uniquement
+2025-03-15 11:35:29,017 - ERROR - Échec du parsing JSON: {
+    "intent": "future_price",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+La requête demande clairement une prédiction de prix futur ("Quelle sera la valeur") pour le Bitcoin (BTC) avec une période spécifique de 30 jours. C'est donc une demande de type "future_price". La langue est en français ("fr"), l'actif est BTC de type crypto, et la période est explicitement mentionnée comme 30 jours.
+2025-03-15 11:38:13,763 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp4d0ljs2z/6c6b96rb.json
+2025-03-15 11:38:13,776 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp4d0ljs2z/ou379vij.json
+2025-03-15 11:38:13,778 - DEBUG - idx 0
+2025-03-15 11:38:13,778 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 11:38:13,778 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=12900', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp4d0ljs2z/6c6b96rb.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp4d0ljs2z/ou379vij.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp4d0ljs2z/prophet_modeltiesyerj/prophet_model-20250315113813.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 11:38:13,778 - INFO - Chain [1] start processing
+2025-03-15 11:38:13,981 - INFO - Chain [1] done processing
+2025-03-15 11:44:14,606 - ERROR - Échec du parsing JSON: {
+    "intent": "price",
+    "assets": ["BTC"],
+    "asset_type": "crypto", 
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+Explication:
+- L'intention est clairement "price" car l'utilisateur demande le prix actuel ("aujourd'hui")
+- L'actif mentionné est "BTC" (Bitcoin)
+- Le type d'actif est par défaut "crypto" pour BTC
+- Timeframe par défaut de 30 jours car non spécifié
+- Price_timeframe est "current" car la question porte sur "aujourd'hui"
+- La langue est "fr" car la question est en français
+2025-03-15 11:44:25,455 - ERROR - Échec du parsing JSON: {
+    "intent": "future_price",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+Je classifie cette requête comme "future_price" car l'utilisateur demande spécifiquement la valeur future ("sera") dans 30 jours, ce qui implique une prédiction de prix.
+
+Les détails sont clairs :
+- L'actif est BTC
+- C'est une crypto par défaut
+- La période est explicitement de 30 jours
+- La langue est en français ("Quelle sera")
+- Le timeframe est "current" car la question part du présent pour une projection future
+2025-03-15 12:00:03,056 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1z65w129/zi_xq71c.json
+2025-03-15 12:00:03,071 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1z65w129/r_uvjr0o.json
+2025-03-15 12:00:03,073 - DEBUG - idx 0
+2025-03-15 12:00:03,073 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:00:03,073 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=30339', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1z65w129/zi_xq71c.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1z65w129/r_uvjr0o.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1z65w129/prophet_modelcotadeni/prophet_model-20250315120003.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:00:03,073 - INFO - Chain [1] start processing
+2025-03-15 12:00:03,217 - INFO - Chain [1] done processing
+2025-03-15 12:01:38,459 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/w8oil5hq.json
+2025-03-15 12:01:38,503 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/x_4anmhr.json
+2025-03-15 12:01:38,504 - DEBUG - idx 0
+2025-03-15 12:01:38,504 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:01:38,504 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=67887', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/w8oil5hq.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/x_4anmhr.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/prophet_modelx1exvfka/prophet_model-20250315120138.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:01:38,504 - INFO - Chain [1] start processing
+2025-03-15 12:01:38,757 - INFO - Chain [1] done processing
+2025-03-15 12:02:14,265 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/8kyp6h38.json
+2025-03-15 12:02:14,306 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/di12evb3.json
+2025-03-15 12:02:14,309 - DEBUG - idx 0
+2025-03-15 12:02:14,309 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:02:14,309 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=80135', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/8kyp6h38.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/di12evb3.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcnr3xcwp/prophet_model6mkgvfv9/prophet_model-20250315120214.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:02:14,309 - INFO - Chain [1] start processing
+2025-03-15 12:02:14,368 - INFO - Chain [1] done processing
+2025-03-15 12:24:54,508 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/vzcg8gx1.json
+2025-03-15 12:24:54,541 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/x75kams1.json
+2025-03-15 12:24:54,543 - DEBUG - idx 0
+2025-03-15 12:24:54,543 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:24:54,543 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=30552', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/vzcg8gx1.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/x75kams1.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/prophet_model4k6aln46/prophet_model-20250315122454.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:24:54,543 - INFO - Chain [1] start processing
+2025-03-15 12:24:54,617 - INFO - Chain [1] done processing
+2025-03-15 12:25:04,699 - INFO - n_changepoints greater than number of observations. Using 0.
+2025-03-15 12:25:04,700 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/wa8wdl9n.json
+2025-03-15 12:25:04,701 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/8w190ghr.json
+2025-03-15 12:25:04,701 - DEBUG - idx 0
+2025-03-15 12:25:04,701 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:25:04,701 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=55260', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/wa8wdl9n.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/8w190ghr.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/prophet_modeliwwr_ll5/prophet_model-20250315122504.csv', 'method=optimize', 'algorithm=newton', 'iter=10000']
+2025-03-15 12:25:04,701 - INFO - Chain [1] start processing
+2025-03-15 12:25:04,777 - INFO - Chain [1] done processing
+2025-03-15 12:25:39,235 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/7ykpyhri.json
+2025-03-15 12:25:39,276 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/aai8oi17.json
+2025-03-15 12:25:39,277 - DEBUG - idx 0
+2025-03-15 12:25:39,277 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:25:39,277 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=19696', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/7ykpyhri.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/aai8oi17.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp3wckx6fw/prophet_modelhrr1ugv3/prophet_model-20250315122539.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:25:39,277 - INFO - Chain [1] start processing
+2025-03-15 12:25:39,334 - INFO - Chain [1] done processing
+2025-03-15 12:46:06,060 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/ozx5bttf.json
+2025-03-15 12:46:06,097 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/avxyrwt4.json
+2025-03-15 12:46:06,101 - DEBUG - idx 0
+2025-03-15 12:46:06,101 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:46:06,101 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=23715', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/ozx5bttf.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/avxyrwt4.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/prophet_modelcqa1iqzs/prophet_model-20250315124606.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:46:06,101 - INFO - Chain [1] start processing
+2025-03-15 12:46:06,163 - INFO - Chain [1] done processing
+2025-03-15 12:46:25,323 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/qdzpttxz.json
+2025-03-15 12:46:25,360 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/9ilil8p1.json
+2025-03-15 12:46:25,361 - DEBUG - idx 0
+2025-03-15 12:46:25,361 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:46:25,361 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=53959', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/qdzpttxz.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/9ilil8p1.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/prophet_modeltftchlj0/prophet_model-20250315124625.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 12:46:25,361 - INFO - Chain [1] start processing
+2025-03-15 12:46:25,432 - INFO - Chain [1] done processing
+2025-03-15 12:46:33,690 - INFO - n_changepoints greater than number of observations. Using 0.
+2025-03-15 12:46:33,691 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/iecn4fx1.json
+2025-03-15 12:46:33,692 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/5ppa9j1n.json
+2025-03-15 12:46:33,692 - DEBUG - idx 0
+2025-03-15 12:46:33,692 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 12:46:33,692 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=81399', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/iecn4fx1.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/5ppa9j1n.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpcpdz_6rs/prophet_modelcr6ctrpd/prophet_model-20250315124633.csv', 'method=optimize', 'algorithm=newton', 'iter=10000']
+2025-03-15 12:46:33,692 - INFO - Chain [1] start processing
+2025-03-15 12:46:33,773 - INFO - Chain [1] done processing
+2025-03-15 13:07:56,149 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 13:07:56,155 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 13:07:56,157 - INFO -  * Restarting with stat
+2025-03-15 13:07:58,221 - WARNING -  * Debugger is active!
+2025-03-15 13:07:58,231 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:08:58,009 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 13:08:58,009 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 13:08:58,010 - INFO -  * Restarting with stat
+2025-03-15 13:08:59,578 - WARNING -  * Debugger is active!
+2025-03-15 13:08:59,586 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:13:06,320 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 13:13:06,321 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 13:13:06,322 - INFO -  * Restarting with stat
+2025-03-15 13:13:08,794 - WARNING -  * Debugger is active!
+2025-03-15 13:13:08,802 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:15:53,288 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 13:15:53,288 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 13:15:53,289 - INFO -  * Restarting with stat
+2025-03-15 13:15:55,346 - WARNING -  * Debugger is active!
+2025-03-15 13:15:55,356 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:29:09,100 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/routes.py', reloading
+2025-03-15 13:29:09,858 - INFO -  * Restarting with stat
+2025-03-15 13:29:12,970 - WARNING -  * Debugger is active!
+2025-03-15 13:29:12,980 - INFO -  * Debugger PIN: 587-778-401
