@@ -268,3 +268,9 @@ Les détails sont clairs :
 2025-03-15 14:28:54,997 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=47093', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/neqrpxh_.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/zlo4bfk6.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/prophet_modelst8j031x/prophet_model-20250315142854.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
 2025-03-15 14:28:54,997 - INFO - Chain [1] start processing
 2025-03-15 14:28:55,184 - INFO - Chain [1] done processing
+2025-03-15 14:44:15,939 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 14:44:15,940 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 14:44:15,941 - INFO -  * Restarting with stat
+2025-03-15 14:44:17,467 - WARNING -  * Debugger is active!
+2025-03-15 14:44:17,476 - INFO -  * Debugger PIN: 587-778-401
