@@ -274,3 +274,11 @@ Les détails sont clairs :
 2025-03-15 14:44:15,941 - INFO -  * Restarting with stat
 2025-03-15 14:44:17,467 - WARNING -  * Debugger is active!
 2025-03-15 14:44:17,476 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 14:45:57,240 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 14:45:57,240 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 14:45:57,241 - INFO -  * Restarting with stat
+2025-03-15 14:45:58,996 - WARNING -  * Debugger is active!
+2025-03-15 14:45:59,005 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 14:53:39,474 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/data/news_handler.py', reloading
+2025-03-15 14:53:41,146 - INFO -  * Restarting with stat
