@@ -32,6 +32,8 @@ from app.data.news_handler import NewsHandler
 from app.nlp.ClaudeHandler import ClaudeHandler  
 from app.data.simulator import TradingSimulator
 
+
+
 # Clé secrète pour JWT
 JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_hex(32))
 JWT_EXPIRATION = 30  # en jours
@@ -593,9 +595,13 @@ def notifications():
 
 @main.route('/news')
 def news():
+    """Affiche la page des news financières en fonction de la catégorie ou de l'entreprise."""
+    
+    # 🔐 Vérification de l'authentification
     token = request.cookies.get('finnToken')
     if not token:
         return redirect(url_for('main.show_connexion'))
+
     try:
         data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
         user_id = data['user_id']
@@ -604,30 +610,54 @@ def news():
             response = make_response(redirect(url_for('main.show_connexion')))
             response.delete_cookie('finnToken')
             return response
-            
-        # Récupérer les conversations récentes pour afficher dans la barre latérale
         recent_conversations = get_user_conversations(user_id)
-            
-    except:
+
+    except jwt.ExpiredSignatureError:
         response = make_response(redirect(url_for('main.show_connexion')))
         response.delete_cookie('finnToken')
         return response
-        
+    except jwt.InvalidTokenError:
+        return redirect(url_for('main.show_connexion'))
+
+    # 📌 Paramètres de la requête
     company = request.args.get('company', None)
-    categories = ['Stock Markets', 'Cryptocurrencies', 'Macroeconomics', 'Commodities', 'Financial Tech', 'Financial Regulation', 'Forex & Currencies', 'Technical Analysis']
     category = request.args.get('category', 'Stock Markets')
-    if company:
-        news_data = news_handler.get_company_news(company)
-        view_type = 'company'
-    else:
-        news_data = news_handler.get_global_news(category=category)
-        view_type = 'category'
-    if isinstance(news_data, str):
-        error_message = news_data
+    categories = [
+        'Stock Markets', 'Cryptocurrencies', 'Macroeconomics', 'Commodities', 
+        'Financial Tech', 'Financial Regulation', 'Forex & Currencies', 'Technical Analysis'
+    ]
+
+    # 🔍 Récupération des news avec gestion des erreurs
+    try:
+        if company:
+            news_data = news_handler.get_company_news(company)
+            view_type = 'company'
+        else:
+            news_data = news_handler.get_global_news(category=category)
+            view_type = 'category'
+
+        if not news_data or isinstance(news_data, str):
+            error_message = news_data if isinstance(news_data, str) else "Aucune news disponible."
+            news_data = []
+        else:
+            error_message = None
+
+    except Exception as e:
         news_data = []
-    else:
-        error_message = None
-    return render_template('news.html', active_page='news', news_data=news_data, categories=categories, current_category=category, company_name=company, view_type=view_type, error_message=error_message, current_user=current_user, recent_conversations=recent_conversations)
+        error_message = "Erreur lors de la récupération des news."
+
+    return render_template(
+        'news.html',
+        active_page='news',
+        news_data=news_data,
+        categories=categories,
+        current_category=category,
+        company_name=company,
+        view_type=view_type,
+        error_message=error_message,
+        current_user=current_user,
+        recent_conversations=recent_conversations
+    )
 
 @main.route('/privacy')
 def privacy():
