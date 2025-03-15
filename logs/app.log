@@ -1,0 +1,72 @@
+2025-03-15 06:04:50,310 - ERROR - Erreur lors de la récupération des données pour month: Crypto non trouvée: bitcoin
+2025-03-15 06:04:53,061 - ERROR - Erreur lors de la récupération des données pour month: Crypto non trouvée: ethereum
+2025-03-15 06:39:16,489 - ERROR - Erreur lors de la récupération des données historiques: Crypto non trouvée: google-tokenized-stock-defichain
+2025-03-15 06:39:37,869 - ERROR - Erreur lors de la récupération des données historiques: Crypto non trouvée: bitcoin
+2025-03-15 08:23:32,442 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpardgjtaq/bh34yila.json
+2025-03-15 08:23:32,485 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpardgjtaq/s6pwlczd.json
+2025-03-15 08:23:32,486 - DEBUG - idx 0
+2025-03-15 08:23:32,486 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 08:23:32,486 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=50050', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpardgjtaq/bh34yila.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpardgjtaq/s6pwlczd.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpardgjtaq/prophet_modelyidgv_p6/prophet_model-20250315082332.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 08:23:32,486 - INFO - Chain [1] start processing
+2025-03-15 08:23:32,762 - INFO - Chain [1] done processing
+2025-03-15 08:24:16,370 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 08:24:35,077 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 08:25:03,655 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 08:33:05,426 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 08:33:23,000 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 08:33:41,690 - ERROR - Erreur lors de l'analyse de la requête: Invalid format specifier
+2025-03-15 09:20:49,464 - ERROR - Erreur API après 1 tentatives: Crypto non trouvée: backed-tesla
+2025-03-15 09:54:37,440 - ERROR - Échec du parsing JSON: {
+    "intent": "price",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+Je peux justifier cette analyse :
+- L'intention est clairement d'obtenir le prix actuel ("price") avec "Quel est le prix... aujourd'hui"
+- L'actif mentionné est uniquement BTC
+- Le type d'actif est par défaut crypto s'agissant de BTC
+- Aucune période spécifique n'est mentionnée, donc timeframe par défaut de 30 jours
+- Le timeframe de prix est "current" car la question demande le prix "aujourd'hui"
+- La question est posée en français, donc language "
+2025-03-15 09:54:49,213 - ERROR - Échec du parsing JSON: {
+    "intent": "future_price",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["current"],
+    "language": "fr"
+}
+
+Note explicative :
+- Intent "future_price" car la question demande explicitement une prédiction de prix futur ("Quelle sera")
+- L'actif est clairement spécifié comme "BTC"
+- Type d'actif par défaut "crypto" pour BTC
+- Timeframe explicitement mentionné de 30 jours
+- Price_timeframe "current" car la prédiction part du prix actuel
+- Langue française ("fr") car la question est posée en français
+2025-03-15 09:55:06,240 - ERROR - Échec du parsing JSON: {
+    "intent": "visualization",
+    "assets": ["BTC"],
+    "asset_type": "crypto",
+    "timeframe": 30,
+    "price_timeframes": ["month"],
+    "language": "fr"
+}
+
+Je traduis cette requête comme une demande de visualisation car le verbe "Visualise" est explicitement utilisé, avec :
+- Un actif unique : BTC (Bitcoin)
+- Type par défaut : crypto
+- Une période précise de 30 jours mentionnée
+- Un timeframe mensuel basé sur la période demandée
+- La requête est en français
+2025-03-15 09:55:56,610 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/rnn3pi11.json
+2025-03-15 09:55:56,621 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/mesdxyd6.json
+2025-03-15 09:55:56,623 - DEBUG - idx 0
+2025-03-15 09:55:56,623 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 09:55:56,623 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=67650', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/rnn3pi11.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/mesdxyd6.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpyidu0zuf/prophet_modela6txesa_/prophet_model-20250315095556.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 09:55:56,623 - INFO - Chain [1] start processing
+2025-03-15 09:55:56,762 - INFO - Chain [1] done processing

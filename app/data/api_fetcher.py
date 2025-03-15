@@ -5,6 +5,20 @@ from typing import Optional, Tuple, Dict
 from datetime import datetime
 from pycoingecko import CoinGeckoAPI
 import time 
+import logging
+import os
+
+
+# Configuration du logging pour éviter les logs visibles (rediriger vers un fichier)
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+logging.basicConfig(
+    level=logging.WARNING,  # Seulement les avertissements et erreurs
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename='logs/app.log'  # Écriture dans un fichier
+)
+logger = logging.getLogger(__name__)
+
 
 class SymbolMapper:
     """Classe pour mapper les noms/symboles aux identifiants corrects"""
@@ -96,7 +110,6 @@ class DataCollector:
             raise RuntimeError(f"Erreur lors de la collecte des données historiques: {e}")
 
     def get_stock_current(self, query: str) -> Dict:
-        """Récupère les données en temps réel d'une action"""
         result = self.mapper.get_stock_info(query)
         if not result:
             raise ValueError(f"Action non trouvée: {query}")
@@ -107,25 +120,27 @@ class DataCollector:
             session.headers.update({'User-Agent': 'Mozilla/5.0'})
             stock = yf.Ticker(symbol, session=session)
             
-            # Récupération des données historiques sur 5 jours
             df = stock.history(period='5d')
-            
             if df.empty:
-                raise ValueError(f"Aucune donnée récupérée pour le symbole {symbol}")
+                raise ValueError(f"Aucune donnée pour {symbol}")
             
-            # Vérifier la présence des colonnes et utiliser des valeurs par défaut si nécessaire
-            current_price = df['Close'].iloc[-1] if 'Close' in df.columns and not df.empty else None
-            prev_close = df['Close'].iloc[-2] if 'Close' in df.columns and len(df) > 1 else current_price if current_price else None
-
+            current_price = float(df['Close'].iloc[-1]) if 'Close' in df.columns else None
+            prev_close = float(df['Close'].iloc[-2]) if 'Close' in df.columns and len(df) > 1 else None
+            
             if current_price is None or prev_close is None:
-                raise ValueError(f"Données de prix insuffisantes pour {symbol}")
-
+                raise ValueError(f"Données de prix manquantes pour {symbol}")
+            
             change = ((current_price - prev_close) / prev_close) * 100 if prev_close != 0 else 0
             
-            # Récupérer high, low, open avec gestion des erreurs
-            high = df['High'].iloc[-1] if 'High' in df.columns and not df.empty else None
-            low = df['Low'].iloc[-1] if 'Low' in df.columns and not df.empty else None
-            open_price = df['Open'].iloc[-1] if 'Open' in df.columns and not df.empty else None
+            high = float(df['High'].iloc[-1]) if 'High' in df.columns and not pd.isna(df['High'].iloc[-1]) else None
+            low = float(df['Low'].iloc[-1]) if 'Low' in df.columns and not pd.isna(df['Low'].iloc[-1]) else None
+            open_price = float(df['Open'].iloc[-1]) if 'Open' in df.columns and not pd.isna(df['Open'].iloc[-1]) else None
+            volume = int(df['Volume'].iloc[-1]) if 'Volume' in df.columns and not pd.isna(df['Volume'].iloc[-1]) else 0
+
+            info = stock.info or {}
+            pe_ratio = float(info.get('forwardPE')) if info.get('forwardPE') is not None else None
+            market_cap = int(info.get('marketCap')) if info.get('marketCap') is not None else None
+            dividend_yield = float(info.get('dividendYield')) if info.get('dividendYield') is not None else None
 
             return {
                 'name': name,
@@ -133,18 +148,18 @@ class DataCollector:
                 'price': round(current_price, 2),
                 'change': round(change, 2),
                 'change_value': round(current_price - prev_close, 2),
-                'volume': int(df['Volume'].iloc[-1]) if 'Volume' in df.columns and not df.empty else 0,
-                'open': round(open_price, 2) if open_price is not None else None,
-                'high': round(high, 2) if high is not None else None,
-                'low': round(low, 2) if low is not None else None,
-                'pe_ratio': stock.info.get('forwardPE'),
-                'market_cap': stock.info.get('marketCap'),
-                'dividend_yield': stock.info.get('dividendYield')
+                'volume': volume,
+                'open': round(open_price, 2) if open_price else None,
+                'high': round(high, 2) if high else None,
+                'low': round(low, 2) if low else None,
+                'pe_ratio': pe_ratio,
+                'market_cap': market_cap,
+                'dividend_yield': dividend_yield
             }
 
         except Exception as e:
-            raise RuntimeError(f"Erreur lors de la collecte des données actuelles: {e}")
-        
+            raise RuntimeError(f"Erreur données actuelles: {str(e)}")
+
     def get_crypto_historical(self, query: str) -> pd.DataFrame:
         """Récupère les données historiques d'une crypto"""
         result = self.mapper.get_crypto_info(query)
@@ -204,17 +219,25 @@ class DataCollector:
             raise RuntimeError(f"Erreur lors de la collecte des données historiques: {e}")
 
     def _make_coingecko_request(self, func, *args, **kwargs):
-        """Fonction utilitaire pour gérer les requêtes CoinGecko avec retry"""
+        """Version améliorée avec backoff exponentiel"""
+        initial_delay = 2  # Démarrer avec 2 secondes
+        max_delay = 30     # Maximum 30 secondes
+        
         for attempt in range(self.max_retries):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
+                # Si c'est une erreur de limite de taux (429)
                 if "429" in str(e) and attempt < self.max_retries - 1:
-                    print(f"Limite de taux atteinte. Attente de {self.retry_delay} secondes...")
-                    time.sleep(self.retry_delay)
+                    # Backoff exponentiel: 2, 4, 8, 16, etc.
+                    delay = min(initial_delay * (2 ** attempt), max_delay)
+                    logger.warning(f"Limite de taux CoinGecko atteinte. Attente de {delay} secondes...")
+                    time.sleep(delay)
                     continue
+                # Si c'est une autre erreur ou si nous avons épuisé nos tentatives
+                logger.error(f"Erreur CoinGecko après {attempt+1} tentatives: {str(e)}")
                 raise
-
+            
     def get_crypto_current(self, query: str) -> Dict:
         """Récupère les données en temps réel d'une crypto"""
         result = self.mapper.get_crypto_info(query)
