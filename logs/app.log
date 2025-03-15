@@ -260,3 +260,11 @@ Les détails sont clairs :
 2025-03-15 14:17:14,679 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=35254', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpa0eltz_2/1kbc1lq2.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpa0eltz_2/1r2e9ywj.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpa0eltz_2/prophet_model_e1_o9zb/prophet_model-20250315141714.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
 2025-03-15 14:17:14,679 - INFO - Chain [1] start processing
 2025-03-15 14:17:14,954 - INFO - Chain [1] done processing
+2025-03-15 14:28:10,045 - ERROR - Erreur API après 1 tentatives: Action non trouvée: TSLA
+2025-03-15 14:28:54,952 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/neqrpxh_.json
+2025-03-15 14:28:54,997 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/zlo4bfk6.json
+2025-03-15 14:28:54,997 - DEBUG - idx 0
+2025-03-15 14:28:54,997 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 14:28:54,997 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=47093', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/neqrpxh_.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/zlo4bfk6.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmpuyu78u24/prophet_modelst8j031x/prophet_model-20250315142854.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 14:28:54,997 - INFO - Chain [1] start processing
+2025-03-15 14:28:55,184 - INFO - Chain [1] done processing
