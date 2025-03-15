@@ -238,7 +238,7 @@ class NewsHandler:
             return f"⚠️ No news available for {category}. Please try another category."
 
         # Retourner directement la liste d'articles plutôt que du texte formaté
-        return articles[:5]
+        return articles[:20]
 
     def get_company_news(self, company_name):
         """Récupère les actualités spécifiques à une entreprise avec un résumé détaillé."""
@@ -250,7 +250,7 @@ class NewsHandler:
         sorted_articles = sorted(articles, key=lambda x: x['date'], reverse=True)
 
         # Retourner directement la liste d'articles plutôt que du texte formaté
-        return sorted_articles[:5]
+        return sorted_articles[:20]
 
 
 if __name__ == "__main__":

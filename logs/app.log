@@ -231,3 +231,21 @@ Les détails sont clairs :
 2025-03-15 13:29:09,858 - INFO -  * Restarting with stat
 2025-03-15 13:29:12,970 - WARNING -  * Debugger is active!
 2025-03-15 13:29:12,980 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:34:10,691 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/data/news_handler.py', reloading
+2025-03-15 13:34:11,522 - INFO -  * Restarting with stat
+2025-03-15 13:34:15,419 - WARNING -  * Debugger is active!
+2025-03-15 13:34:15,429 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:37:48,703 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-03-15 13:37:48,704 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 13:37:48,704 - INFO -  * Restarting with stat
+2025-03-15 13:37:50,741 - WARNING -  * Debugger is active!
+2025-03-15 13:37:50,752 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:43:17,983 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/routes.py', reloading
+2025-03-15 13:43:18,670 - INFO -  * Restarting with stat
+2025-03-15 13:43:22,009 - WARNING -  * Debugger is active!
+2025-03-15 13:43:22,021 - INFO -  * Debugger PIN: 587-778-401
+2025-03-15 13:43:25,250 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/routes.py', reloading
+2025-03-15 13:43:25,958 - INFO -  * Restarting with stat
+2025-03-15 13:43:28,100 - WARNING -  * Debugger is active!
+2025-03-15 13:43:28,108 - INFO -  * Debugger PIN: 587-778-401
