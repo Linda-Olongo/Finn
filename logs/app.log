@@ -282,3 +282,17 @@ Les détails sont clairs :
 2025-03-15 14:45:59,005 - INFO -  * Debugger PIN: 587-778-401
 2025-03-15 14:53:39,474 - INFO -  * Detected change in '/Users/admin/Desktop/finn/app/data/news_handler.py', reloading
 2025-03-15 14:53:41,146 - INFO -  * Restarting with stat
+2025-03-15 14:55:37,749 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/yw8smkwp.json
+2025-03-15 14:55:37,793 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/ezhutu5t.json
+2025-03-15 14:55:37,794 - DEBUG - idx 0
+2025-03-15 14:55:37,794 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 14:55:37,794 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=33474', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/yw8smkwp.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/ezhutu5t.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/prophet_modelnrsyrtjb/prophet_model-20250315145537.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 14:55:37,794 - INFO - Chain [1] start processing
+2025-03-15 14:55:37,983 - INFO - Chain [1] done processing
+2025-03-15 14:55:47,057 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/2_rub3he.json
+2025-03-15 14:55:47,104 - DEBUG - input tempfile: /var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/9fpasujf.json
+2025-03-15 14:55:47,104 - DEBUG - idx 0
+2025-03-15 14:55:47,105 - DEBUG - running CmdStan, num_threads: None
+2025-03-15 14:55:47,105 - DEBUG - CmdStan args: ['/Users/admin/Desktop/finn/my_env/lib/python3.10/site-packages/prophet/stan_model/prophet_model.bin', 'random', 'seed=37749', 'data', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/2_rub3he.json', 'init=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/9fpasujf.json', 'output', 'file=/var/folders/1n/d3tj9kpd549_ytmqz2cjc6rc0000gn/T/tmp1mffrczn/prophet_modelzu_4bj56/prophet_model-20250315145547.csv', 'method=optimize', 'algorithm=lbfgs', 'iter=10000']
+2025-03-15 14:55:47,105 - INFO - Chain [1] start processing
+2025-03-15 14:55:47,282 - INFO - Chain [1] done processing

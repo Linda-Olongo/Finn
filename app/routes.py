@@ -472,56 +472,39 @@ def process_chat(current_user):
     message = data.get('message', '')
     conversation_id = data.get('conversation_id', '')
     user_id = current_user["_id"]
-    
+
     # Vérifier si le message est vide
     if not message.strip():
         return jsonify({'error': 'Message cannot be empty'}), 400
-    
+
     # Cas d'une nouvelle conversation
     if not conversation_id:
         conversation_id = str(uuid.uuid4())
         new_conv = {
-            "_id": conversation_id, 
-            "messages": [], 
-            "created_at": datetime.utcnow(), 
-            "title": "New Conversation", 
+            "_id": conversation_id,
+            "messages": [],
+            "created_at": datetime.utcnow(),
+            "title": "New Conversation",
             "user_id": user_id
         }
         conversations_col.insert_one(new_conv)
-    # Cas d'une conversation existante
     else:
         conversation = conversations_col.find_one({"_id": conversation_id, "user_id": user_id})
         if not conversation:
             return jsonify({'error': 'Unauthorized access to this conversation'}), 403
-    
+
     # Ajouter le message de l'utilisateur à la conversation
     user_message = {'role': 'user', 'content': message, 'timestamp': datetime.utcnow()}
     conversations_col.update_one({"_id": conversation_id}, {"$push": {"messages": user_message}})
-    
-    # Générer un titre pour la nouvelle conversation
-    conversation = conversations_col.find_one({"_id": conversation_id})
-    if len(conversation.get('messages', [])) == 1:
-        try:
-            title_prompt = f"Génère un titre TRÈS court (maximum 3 mots) qui résume cette requête: '{message}'"
-            title_response = claude_handler.process_query(title_prompt)
-            title = title_response.strip()
-            title = re.sub(r'^["\'«]|["\'.!?:,;»]$', '', title).strip()
-            if len(title) > 30 or not title or any(title.lower() == mot for mot in ["titre", "voici", "le titre", "résumé"]):
-                raise Exception("Titre non pertinent généré")
-        except Exception:
-            words = message.split()[:3]
-            title = " ".join(words)
-            if len(title) > 25:
-                title = title[:22]
-        conversations_col.update_one({"_id": conversation_id}, {"$set": {"title": title}})
-    
-    # Traiter la réponse de l'assistant
+
+    # 🔥 **Envoyer le message directement à `ClaudeHandler`**
     response = claude_handler.process_query(message)
-    assistant_message = response
-    assistant_msg = {'role': 'assistant', 'content': assistant_message, 'timestamp': datetime.utcnow()}
+
+    # Ajouter la réponse de l'assistant
+    assistant_msg = {'role': 'assistant', 'content': response, 'timestamp': datetime.utcnow()}
     conversations_col.update_one({"_id": conversation_id}, {"$push": {"messages": assistant_msg}})
-    
-    return jsonify({'response': assistant_message, 'conversation_id': conversation_id})
+
+    return jsonify({'response': response, 'conversation_id': conversation_id})
 
 @main.route('/api/conversations', methods=['GET'])
 @auth_required
